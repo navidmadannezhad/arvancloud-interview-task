@@ -1,4 +1,5 @@
 import Button from "@/src/components/ui/button";
+import Input from "@/src/components/ui/input";
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
         <Button loading={true} variant="primary">
           button
         </Button>
+        <Input placeholder="your name" />
       </main>
     </div>
   );
