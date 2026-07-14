@@ -3,13 +3,74 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --primary-light: #99E3E3;
+  --primary-main: #009595;
+  --primary-dense: #007070;
+  --primary-dark: #004A4A;
+  --primary-foreground: #ffffff;
+
+  /* used for special gray-themed areas, like active select options and etc */
+  --secondary-light: #FFFFFF;
+  --secondary-main: #F0F0F0;
+  --secondary-dense: #EBEBEB;
+  --secondary-dark: #EBEBEB;
+  --secondary-foreground: #000000;
+
+  --danger-light: #EFA5A6;
+  --danger-main: #D61E20;
+  --danger-dense: #AB181A;
+  --danger-dark: #801213;
+  --danger-foreground: #ffffff;
+
+  --success-light: #E3F6E9;
+  --success-main: #17B24A;
+  --success-dense: #17B24A;
+  --success-dark: #17B24A;
+  --success-foreground: #ffffff;
+
+  /* used for borders, and some specific typographies */
+  --muted-light: #CCCCCC;
+  --muted-main: #7F7F7F;
+  --muted-dense: #666666;
+  --muted-dark: #4C4C4C;
+  --muted-foreground: #000000;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  
+  --color-primary-light: var(--primary-light);
+  --color-primary-main: var(--primary-main);
+  --color-primary-dense: var(--primary-dense);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary-light: var(--secondary-light);
+  --color-secondary-main: var(--secondary-main);
+  --color-secondary-dense: var(--secondary-dense);
+  --color-secondary-dark: var(--secondary-dark);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-danger-light: var(--danger-light);
+  --color-danger-main: var(--danger-main);
+  --color-danger-dense: var(--danger-dense);
+  --color-danger-dark: var(--danger-dark);
+  --color-danger-foreground: var(--danger-foreground);
+
+  --color-success-light: var(--success-light);
+  --color-success-main: var(--success-main);
+  --color-success-dense: var(--success-dense);
+  --color-success-dark: var(--prisuccessmary-dark);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-muted-light: var(--muted-light);
+  --color-muted-main: var(--muted-main);
+  --color-muted-dense: var(--muted-dense);
+  --color-muted-dark: var(--muted-dark);
+  --color-muted-foreground: var(--muted-foreground);
+  --system-font: var(--system-font);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +80,12 @@
   }
 }
 
+* {
+  font-family: var(--system-font), sans-serif;
+}
+
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
