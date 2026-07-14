@@ -70,7 +70,7 @@
   --color-muted-dense: var(--muted-dense);
   --color-muted-dark: var(--muted-dark);
   --color-muted-foreground: var(--muted-foreground);
-  --system-font: var(--system-font);
+  --font-main: var(--system-font);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -80,8 +80,10 @@
   }
 }
 
+/* WIP -- check if font is properly given to the variable */
+
 * {
-  font-family: var(--system-font), sans-serif;
+  font-family: var(--font-main), sans-serif;
 }
 
 

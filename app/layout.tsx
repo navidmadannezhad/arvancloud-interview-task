@@ -4,7 +4,7 @@ import localFont from 'next/font/local'
 
 const systemFont = localFont({ 
   src: '../public/fonts/inter/Inter-VariableFont_opsz,wght.ttf',
-  variable: "--system-font"
+  variable: "--system-font",
 })
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${systemFont.className} h-full antialiased`}
+      className={`${systemFont.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
