@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from 'next/font/local'
+import Providers from "./providers";
 
 const systemFont = localFont({ 
   src: '../public/fonts/inter/Inter-VariableFont_opsz,wght.ttf',
@@ -22,7 +23,13 @@ export default function RootLayout({
       lang="en"
       className={`${systemFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <Providers>
+        <body className="min-h-full flex flex-col">
+          <main className="bg-secondary-main min-h-screen flex items-center justify-center">
+            {children}
+          </main>
+        </body>
+      </Providers>
     </html>
   );
-}
+} 

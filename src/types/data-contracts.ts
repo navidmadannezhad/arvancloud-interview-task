@@ -106,6 +106,11 @@ export interface LoginResponse {
     accessToken: string;
     refreshToken: string;
 }
+export interface LoginUserRequestBody{
+    username: string;
+    password: string;
+    expiresInMins?: number;
+}
 export interface RefreshAuthResponse {
     accessToken: string;
     refreshToken: string;

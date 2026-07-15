@@ -1,13 +1,11 @@
-import Button from "@/src/components/ui/button";
-import Input from "@/src/components/ui/input";
+"use client"
 
-export default function Home() {
+import LoginForm from "@/src/components/sections/login-form";
+
+export default function Login() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50">
-      main
-      <main>
-        Login
-      </main>
+    <div className="h-full w-full flex items-center justify-center">
+      <LoginForm />
     </div>
   );
 }
