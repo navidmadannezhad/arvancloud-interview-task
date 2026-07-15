@@ -9,11 +9,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/src/configs/validators";
 import { InferType } from "yup";
 import { useToaster } from "@/src/hooks";
+import { useLoginMutation } from "@/src/services/api/auth-services";
+import { useRouter } from "next/navigation";
 
 interface LoginFormProps{}
 type FormValues = InferType<typeof loginSchema>;
 
 const LoginForm: FC<LoginFormProps> = () => {
+    const router = useRouter();
     const formContext = useForm<FormValues>({
         resolver: yupResolver(loginSchema),
         defaultValues: {
@@ -21,14 +24,25 @@ const LoginForm: FC<LoginFormProps> = () => {
             password: "",
         },
     });
-    const { showSuccessToast } = useToaster();
-
+    const { showSuccessToast, showFailureToast } = useToaster();
+    const loginTrigger = useLoginMutation()
+    
     const handleSubmit = (data: FormValues) => {
-        showSuccessToast({
-            title: "Login successful",
-            description: "You are now logged in",
-        });
-        console.log(data);
+        loginTrigger.mutate(data, {
+            onSuccess: (res) => {
+                showSuccessToast({
+                    title: "Login successful",
+                    description: "You are now logged in",
+                });
+                router.push("/articles")
+            }, 
+            onError: () => {
+                showFailureToast({
+                    title: "Login failed",
+                    description: "Invalid username or password",
+                });
+            },
+        })
     }
 
     return (
@@ -49,7 +63,7 @@ const LoginForm: FC<LoginFormProps> = () => {
                         placeholder="Enter your password"
                     />
                     <div className="flex flex-col gap-2">
-                        <Button variant="primary" type="submit">Sign in</Button>
+                        <Button loading={loginTrigger.isPending} variant="primary" type="submit">Sign in</Button>
                         <p className="text-center text-sm">
                             Don't have an account? <Link href="/register" className="text-primary-main font-bold">Sign up now</Link>
                         </p>

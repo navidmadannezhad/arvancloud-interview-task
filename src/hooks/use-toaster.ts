@@ -26,7 +26,7 @@ export const useToaster = () => {
 
   return {
     showSuccessToast: (options: ToastOptions) => show("success", options),
-    showDangerToast: (options: ToastOptions) => show("danger", options),
+    showFailureToast: (options: ToastOptions) => show("danger", options),
     showLoadingToast: (content: ReactNode) =>
       manager.add({
         type: "loading",

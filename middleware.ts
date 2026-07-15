@@ -11,9 +11,9 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(destinationUrl, 301);
     }
 
-    const access_token = request.cookies.get('access_token')?.value;
-    const refresh_token = request.cookies.get('refresh_token')?.value;
-    const isAuthenticated = !!access_token && !!refresh_token;
+    const accessToken = request.cookies.get('accessToken')?.value;
+    const refreshToken = request.cookies.get('refreshToken')?.value;
+    const isAuthenticated = !!accessToken && !!refreshToken;
 
     if (pathname.startsWith('/articles')) {
         if (!isAuthenticated) {
