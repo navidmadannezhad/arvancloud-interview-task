@@ -8,6 +8,7 @@ import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/src/configs/validators";
 import { InferType } from "yup";
+import { useToaster } from "@/src/hooks";
 
 interface LoginFormProps{}
 type FormValues = InferType<typeof loginSchema>;
@@ -15,9 +16,18 @@ type FormValues = InferType<typeof loginSchema>;
 const LoginForm: FC<LoginFormProps> = () => {
     const formContext = useForm<FormValues>({
         resolver: yupResolver(loginSchema),
+        defaultValues: {
+            username: "",
+            password: "",
+        },
     });
+    const { showSuccessToast } = useToaster();
 
     const handleSubmit = (data: FormValues) => {
+        showSuccessToast({
+            title: "Login successful",
+            description: "You are now logged in",
+        });
         console.log(data);
     }
 
