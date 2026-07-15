@@ -111,12 +111,13 @@ export interface LoginUserRequestBody{
     password: string;
     expiresInMins?: number;
 }
+export interface RegisterUserRequestBody extends User{};
 export interface RefreshAuthResponse {
     accessToken: string;
     refreshToken: string;
 }
 export type GetUsersResponse = Response<User, "users">;
-export type CreateUserResponse = User;
+export type RegisterUserResponse = User;
 export type UpdateUserByIDResponse = User;
 export type DeleteUserByIDResponse = User & {
     isDeleted: boolean;
