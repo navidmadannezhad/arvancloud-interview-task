@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import httpClient from "./http-client";
 import { LoginUserRequestBody } from "@/src/types";
 
@@ -17,3 +17,18 @@ const loginMutationOptions = {
     mutationKey: ["login"],
 }
 export const useLoginMutation = () => useMutation(loginMutationOptions);
+
+const getUserData = async () => {
+    const response = await httpClient({
+        url: "/api/auth/me",
+        options:{
+            method: "POST",
+        }
+    });
+    return response;
+}
+const getUserDataQueryOptions = {
+    queryFn: getUserData,
+    queryKey: ['getUserData'],
+}
+export const useGetUserDataQuery = () => useQuery(getUserDataQueryOptions);
