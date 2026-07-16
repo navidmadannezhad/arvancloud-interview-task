@@ -16,7 +16,7 @@ const interceptRequest = (args: HttpClientArgs) => {
     return args;
 }
 
-const interceptResponse = async (response: Response) => {
+const interceptResponse = async <T>(response: Response): Promise<T> => {
     if(!response.ok)
         throw new Error(response.statusText);   
     const data = await response.json();
@@ -30,8 +30,8 @@ const httpClient = async <T, >(args: HttpClientArgs): Promise<T> => {
         interceptedArgs.url, 
         interceptedArgs.options
     );
-    const interceptedResponse = interceptResponse(response);
-    return interceptedResponse as T;
+    const interceptedResponse = interceptResponse<T>(response);
+    return interceptedResponse;
 }
 
 export default httpClient;

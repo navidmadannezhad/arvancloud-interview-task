@@ -4,3 +4,6 @@ export { default as Spinner } from "./spinner";
 export { default as Card } from "./card";
 export { default as ToastProvider } from "./toast";
 export type { ToastVariant } from "./toast";
+export { default as Sidebar } from "./sidebar";
+export type { SidebarOption } from "./sidebar";
+export { default as Header } from "./header";
