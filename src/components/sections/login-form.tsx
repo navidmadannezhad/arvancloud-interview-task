@@ -8,24 +8,27 @@ import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/src/configs/validators";
 import { InferType } from "yup";
-import { useToaster } from "@/src/hooks";
-import { useLoginMutation } from "@/src/services/api/auth-services";
+import { useAuth, useToaster } from "@/src/hooks";
 import { useRouter } from "next/navigation";
+import usePermenantStore from "@/src/services/store/permenant-store";
 
 interface LoginFormProps{}
 type FormValues = InferType<typeof loginSchema>;
 
 const LoginForm: FC<LoginFormProps> = () => {
     const router = useRouter();
+    const { auth } = usePermenantStore();
     const formContext = useForm<FormValues>({
         resolver: yupResolver(loginSchema),
         defaultValues: {
-            username: "",
-            password: "",
+            username: auth.loginUsername ?? "",
+            password: auth.loginPassword ?? "",
         },
     });
     const { showSuccessToast, showFailureToast } = useToaster();
-    const loginTrigger = useLoginMutation()
+    const {
+        loginTrigger
+    } = useAuth()
     
     const handleSubmit = (data: FormValues) => {
         loginTrigger.mutate(data, {
@@ -61,6 +64,7 @@ const LoginForm: FC<LoginFormProps> = () => {
                         name="password"
                         label="Password"
                         placeholder="Enter your password"
+                        type="password"
                     />
                     <div className="flex flex-col gap-2">
                         <Button loading={loginTrigger.isPending} variant="primary" type="submit">Sign in</Button>
