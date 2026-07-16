@@ -116,7 +116,7 @@ const Pagination: FC<PaginationProps> = ({
       {...rest}
       aria-label="Pagination"
       className={clsx(
-        "inline-flex items-center gap-2 rounded-xl border border-muted-light bg-background px-4 py-2",
+        "inline-flex w-fit items-center gap-2 rounded-xl border border-muted-light bg-background px-4 py-2",
         className,
       )}
     >

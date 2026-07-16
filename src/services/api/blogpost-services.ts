@@ -17,6 +17,7 @@ const getPostsByUserIDQueryOptions = (userID: number, queryParams: QueryParams) 
     queryFn: () => getPostsByUserID(userID, queryParams), 
     queryKey: [`getPostsByUserID-${userID}`, queryParams],
 })
-export const useGetPostsByUserIDQuery = (userID: number, queryParams: QueryParams) => useQuery(
-    getPostsByUserIDQueryOptions(userID, queryParams)
-);
+export const useGetPostsByUserIDQuery = (userID: number, queryParams: QueryParams) => useQuery({
+    ...getPostsByUserIDQueryOptions(userID, queryParams),
+    enabled: !!userID,
+});

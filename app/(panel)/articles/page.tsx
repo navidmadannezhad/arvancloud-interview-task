@@ -1,5 +1,5 @@
-import ArticlesSection from "@/src/components/sections/articles-table";
+import ArticlesSection from "@/src/components/sections/articles-section";
 
 export default function Articles() {
-  return <ArticlesSection />;
+  return <ArticlesSection page={1} />;
 }
