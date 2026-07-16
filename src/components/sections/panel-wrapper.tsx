@@ -32,7 +32,9 @@ const PanelWrapper: FC<PanelWrapperProps> = ({ children, sidebarOptions }) => {
       />
       <div className="flex flex-1">
         <Sidebar options={options} height="100%" className="min-h-full" />
-        <main className="flex-1 bg-secondary-main">{children}</main>
+        <div className="flex-1 bg-secondary-main p-4">
+          {children}
+        </div>
       </div>
     </div>
   );
