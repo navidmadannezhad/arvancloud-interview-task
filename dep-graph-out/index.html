@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Typescript Modularity — </title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f18;--surface:#131620;--surface2:#1a1d2e;--border:#252840;
+  --text:#e2e8f0;--muted:#5a6480;--accent:#7c6af7;--accent2:#34d399;
+  --danger:#f87171;--warn:#fbbf24;
+  --r:6px;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
+  display:flex;flex-direction:column;height:100vh;overflow:hidden;font-size:13px}
+
+/* ── Header ── */
+#hdr{
+  padding:0 16px;height:44px;background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+  box-shadow:0 1px 0 rgba(0,0,0,.4);
+}
+#hdr-title{font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.3px}
+#hdr-meta{font-size:11px;color:var(--muted)}
+#hdr-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+
+/* ── Layout ── */
+#shell{display:flex;flex:1;overflow:hidden}
+#canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg)}
+svg{width:100%;height:100%}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:260px;background:var(--surface);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;
+}
+#sb-head{
+  padding:10px 12px 8px;border-bottom:1px solid var(--border);
+  font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+}
+#sb-body{flex:1;overflow-y:auto}
+#sb-body::-webkit-scrollbar{width:4px}
+#sb-body::-webkit-scrollbar-track{background:transparent}
+#sb-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.ci{padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.ci:hover{background:var(--surface2)}
+.ci.sel{background:#1e1a3a}
+.ci-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-stats{display:flex;gap:6px;margin-top:3px}
+.pill{
+  font-size:9px;padding:1px 5px;border-radius:10px;
+  background:var(--surface2);color:var(--muted);border:1px solid var(--border);
+}
+.pill.hi{color:var(--accent);border-color:var(--accent)}
+.ibar{height:2px;background:var(--border);border-radius:1px;margin-top:5px;overflow:hidden}
+.ifill{height:100%;border-radius:1px;transition:width .3s}
+
+/* ── Controls ── */
+.ctrl-group{display:flex;gap:4px;align-items:center}
+.ctrl-label{font-size:10px;color:var(--muted);white-space:nowrap}
+.btn{
+  background:var(--surface2);color:var(--text);border:1px solid var(--border);
+  border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;
+  transition:background .12s,border-color .12s;white-space:nowrap;
+}
+.btn:hover{background:var(--border)}
+.btn.on{background:#2d1f6e;border-color:var(--accent);color:var(--accent)}
+select.sel{
+  background:var(--surface2);color:var(--text);border:1px solid var(--border);
+  border-radius:4px;padding:3px 6px;font-size:11px;
+}
+
+/* ── Tooltip ── */
+#tip{
+  position:fixed;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:10px 14px;font-size:11px;
+  pointer-events:none;opacity:0;transition:opacity .12s;
+  max-width:300px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
+.tip-title{font-weight:600;color:var(--accent);margin-bottom:6px;font-size:12px}
+.tip-row{color:var(--muted);line-height:1.7;display:flex;justify-content:space-between;gap:16px}
+.tip-val{color:var(--text);font-weight:500}
+
+/* ── Graph elements ── */
+.node-rect{rx:8;cursor:pointer;transition:filter .15s}
+.node-rect:hover{filter:brightness(1.3)}
+.node-label{font-size:11px;font-weight:600;fill:#e2e8f0;pointer-events:none;dominant-baseline:middle;text-anchor:middle}
+.node-sub{font-size:9px;fill:#718096;pointer-events:none;dominant-baseline:middle;text-anchor:middle}
+.edge-path{fill:none;stroke-opacity:.6;marker-end:url(#arr)}
+.edge-path:hover{stroke-opacity:1}
+.dimmed{opacity:.05!important}
+.grid-cell{cursor:pointer;rx:2}
+.grid-cell:hover{filter:brightness(1.5)}
+
+/* ── Matrix ── */
+#matrix-wrap{
+  flex:1;overflow:auto;display:flex;align-items:flex-start;
+  justify-content:flex-start;padding:20px;
+}
+#matrix-wrap::-webkit-scrollbar{width:6px;height:6px}
+#matrix-wrap::-webkit-scrollbar-track{background:transparent}
+#matrix-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── Suggestions ── */
+#suggest-wrap{
+  flex:1;overflow-y:auto;padding:20px 24px;display:none;
+  background:var(--bg);
+}
+#suggest-wrap::-webkit-scrollbar{width:5px}
+#suggest-wrap::-webkit-scrollbar-track{background:transparent}
+#suggest-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.sg-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.sg-title{font-size:13px;font-weight:600;color:var(--text)}
+.sg-sub{font-size:11px;color:var(--muted)}
+.sg-threshold{display:flex;align-items:center;gap:6px;margin-left:auto}
+.sg-threshold label{font-size:11px;color:var(--muted)}
+.sg-threshold input{
+  background:var(--surface2);color:var(--text);border:1px solid var(--border);
+  border-radius:4px;padding:2px 6px;font-size:11px;width:52px;
+}
+.sg-cluster-block{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  margin-bottom:14px;overflow:hidden;
+}
+.sg-cluster-hdr{
+  padding:10px 14px;display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid var(--border);background:var(--surface2);
+}
+.sg-cluster-name{font-size:12px;font-weight:600;color:var(--text)}
+.sg-cluster-path{font-size:10px;color:var(--muted)}
+.sg-mpill{
+  margin-left:auto;font-size:10px;padding:1px 7px;border-radius:10px;
+  border:1px solid;
+}
+.sg-row{
+  padding:9px 14px;border-bottom:1px solid var(--border);
+  display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;
+}
+.sg-row:last-child{border-bottom:none}
+.sg-file{font-size:11px;color:var(--text);word-break:break-all}
+.sg-dest{font-size:10px;color:var(--muted);margin-top:2px}
+.sg-dest span{color:var(--accent)}
+.sg-badges{display:flex;gap:4px;flex-shrink:0;align-items:center}
+.sg-badge{font-size:9px;padding:1px 6px;border-radius:10px;border:1px solid;white-space:nowrap}
+.sg-empty{font-size:11px;color:var(--muted);padding:14px;font-style:italic}
+#sg-gitcmds{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  margin-top:18px;overflow:hidden;
+}
+.sg-gitcmds-hdr{
+  padding:9px 14px;display:flex;align-items:center;gap:8px;
+  background:var(--surface2);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);
+}
+.sg-copy-btn{
+  margin-left:auto;background:var(--surface2);color:var(--text);
+  border:1px solid var(--border);border-radius:4px;padding:2px 8px;
+  font-size:10px;cursor:pointer;transition:background .12s;
+}
+.sg-copy-btn:hover{background:var(--border)}
+.sg-gitcmds-body{
+  padding:12px 14px;font-family:monospace;font-size:11px;
+  color:var(--accent2);line-height:1.8;white-space:pre;overflow-x:auto;
+}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div id="hdr-title">Typescript Modularity</div>
+  <div id="hdr-meta" id="meta">—</div>
+  <div id="hdr-right">
+    <div class="ctrl-group" id="dag-controls" style="display:none">
+      <span class="ctrl-label">Sort</span>
+      <select class="sel" id="sort-sel" onchange="draw()">
+        <option value="modularity">Modularity</option>
+        <option value="files">File count</option>
+        <option value="inEdges">In-deps</option>
+        <option value="alpha">Name</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">View</span>
+      <select class="sel" id="view-sel" onchange="switchTab(this.value)">
+        <option value="dag">DAG Layout</option>
+        <option value="force">Force Graph</option>
+        <option value="matrix">Coupling Matrix</option>
+        <option value="chord" selected>Chord</option>
+        <option value="suggestions">Suggestions</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div id="shell">
+  <div id="canvas-wrap">
+    <svg id="svg"></svg>
+    <div id="matrix-wrap" style="display:none"></div>
+    <div id="suggest-wrap"></div>
+  </div>
+  <div id="sidebar">
+    <div id="sb-head">Clusters <span id="cluster-count" style="color:var(--accent)"></span></div>
+    <div id="sb-body"></div>
+  </div>
+</div>
+<div id="tip"></div>
+
+<script>
+const G = {"meta":{"generated":"2026-07-15T10:59:25.224Z","srcDir":"","totalFiles":23,"totalEdges":13,"totalClusters":23,"clusterDepth":1},"clusters":[{"id":"app\\articles\\create\\page.tsx","label":"app\\articles\\create\\page.tsx","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"app\\articles\\edit\\page.tsx","label":"app\\articles\\edit\\page.tsx","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"app\\articles\\layout.tsx","label":"app\\articles\\layout.tsx","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"app\\articles\\page\\[page]\\page.tsx","label":"app\\articles\\page\\[page]\\page.tsx","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"app\\articles\\page.tsx","label":"app\\articles\\page.tsx","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"app\\layout.tsx","label":"app\\layout.tsx","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"app\\login\\page.tsx","label":"app\\login\\page.tsx","files":1,"outEdges":2,"inEdges":0,"internalEdges":0,"modularity":0,"coupling":2,"cohesion":0},{"id":"app\\page.tsx","label":"app\\page.tsx","files":1,"outEdges":2,"inEdges":0,"internalEdges":0,"modularity":0,"coupling":2,"cohesion":0},{"id":"app\\register\\page.tsx","label":"app\\register\\page.tsx","files":1,"outEdges":2,"inEdges":0,"internalEdges":0,"modularity":0,"coupling":2,"cohesion":0},{"id":"middleware.ts","label":"middleware.ts","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"next.config.ts","label":"next.config.ts","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"src\\components\\major\\icons\\check-circle-icon.tsx","label":"src\\components\\major\\icons\\check-circle-icon.tsx","files":1,"outEdges":1,"inEdges":1,"internalEdges":0,"modularity":0,"coupling":2,"cohesion":0},{"id":"src\\components\\major\\icons\\index.ts","label":"src\\components\\major\\icons\\index.ts","files":1,"outEdges":1,"inEdges":0,"internalEdges":0,"modularity":0,"coupling":1,"cohesion":0},{"id":"src\\components\\major\\icons\\spinner-icon.tsx","label":"src\\components\\major\\icons\\spinner-icon.tsx","files":1,"outEdges":1,"inEdges":1,"internalEdges":0,"modularity":0,"coupling":2,"cohesion":0},{"id":"src\\components\\ui\\button.tsx","label":"src\\components\\ui\\button.tsx","files":1,"outEdges":1,"inEdges":3,"internalEdges":0,"modularity":0,"coupling":4,"cohesion":0},{"id":"src\\components\\ui\\input.tsx","label":"src\\components\\ui\\input.tsx","files":1,"outEdges":0,"inEdges":3,"internalEdges":0,"modularity":0,"coupling":3,"cohesion":0},{"id":"src\\components\\ui\\spinner.tsx","label":"src\\components\\ui\\spinner.tsx","files":1,"outEdges":1,"inEdges":1,"internalEdges":0,"modularity":0,"coupling":2,"cohesion":0},{"id":"src\\services\\api\\auth-services.ts","label":"src\\services\\api\\auth-services.ts","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"src\\services\\api\\blogpost-services.ts","label":"src\\services\\api\\blogpost-services.ts","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"src\\services\\api\\http-client.ts","label":"src\\services\\api\\http-client.ts","files":1,"outEdges":0,"inEdges":0,"internalEdges":0,"modularity":1,"coupling":0,"cohesion":0},{"id":"src\\types\\common.ts","label":"src\\types\\common.ts","files":1,"outEdges":0,"inEdges":3,"internalEdges":0,"modularity":0,"coupling":3,"cohesion":0},{"id":"src\\types\\data-contracts.ts","label":"src\\types\\data-contracts.ts","files":1,"outEdges":0,"inEdges":1,"internalEdges":0,"modularity":0,"coupling":1,"cohesion":0},{"id":"src\\types\\index.ts","label":"src\\types\\index.ts","files":1,"outEdges":2,"inEdges":0,"internalEdges":0,"modularity":0,"coupling":2,"cohesion":0}],"clusterEdges":[{"source":"app\\login\\page.tsx","target":"src\\components\\ui\\button.tsx","weight":1},{"source":"app\\login\\page.tsx","target":"src\\components\\ui\\input.tsx","weight":1},{"source":"app\\page.tsx","target":"src\\components\\ui\\button.tsx","weight":1},{"source":"app\\page.tsx","target":"src\\components\\ui\\input.tsx","weight":1},{"source":"app\\register\\page.tsx","target":"src\\components\\ui\\button.tsx","weight":1},{"source":"app\\register\\page.tsx","target":"src\\components\\ui\\input.tsx","weight":1},{"source":"src\\components\\major\\icons\\check-circle-icon.tsx","target":"src\\types\\common.ts","weight":1},{"source":"src\\components\\major\\icons\\index.ts","target":"src\\components\\major\\icons\\check-circle-icon.tsx","weight":1},{"source":"src\\components\\major\\icons\\spinner-icon.tsx","target":"src\\types\\common.ts","weight":1},{"source":"src\\components\\ui\\button.tsx","target":"src\\components\\ui\\spinner.tsx","weight":1},{"source":"src\\components\\ui\\spinner.tsx","target":"src\\components\\major\\icons\\spinner-icon.tsx","weight":1},{"source":"src\\types\\index.ts","target":"src\\types\\data-contracts.ts","weight":1},{"source":"src\\types\\index.ts","target":"src\\types\\common.ts","weight":1}],"files":[{"id":"src\\components\\ui\\button.tsx","label":"button.tsx","path":"src\\components\\ui\\button.tsx","cluster":"src\\components\\ui\\button.tsx","clusterLabel":"src\\components\\ui\\button.tsx","imports":1,"importedBy":3},{"id":"src\\components\\ui\\input.tsx","label":"input.tsx","path":"src\\components\\ui\\input.tsx","cluster":"src\\components\\ui\\input.tsx","clusterLabel":"src\\components\\ui\\input.tsx","imports":0,"importedBy":3},{"id":"src\\types\\common.ts","label":"common.ts","path":"src\\types\\common.ts","cluster":"src\\types\\common.ts","clusterLabel":"src\\types\\common.ts","imports":0,"importedBy":3},{"id":"src\\components\\major\\icons\\check-circle-icon.tsx","label":"check-circle-icon.tsx","path":"src\\components\\major\\icons\\check-circle-icon.tsx","cluster":"src\\components\\major\\icons\\check-circle-icon.tsx","clusterLabel":"src\\components\\major\\icons\\check-circle-icon.tsx","imports":1,"importedBy":1},{"id":"src\\components\\major\\icons\\spinner-icon.tsx","label":"spinner-icon.tsx","path":"src\\components\\major\\icons\\spinner-icon.tsx","cluster":"src\\components\\major\\icons\\spinner-icon.tsx","clusterLabel":"src\\components\\major\\icons\\spinner-icon.tsx","imports":1,"importedBy":1},{"id":"src\\components\\ui\\spinner.tsx","label":"spinner.tsx","path":"src\\components\\ui\\spinner.tsx","cluster":"src\\components\\ui\\spinner.tsx","clusterLabel":"src\\components\\ui\\spinner.tsx","imports":1,"importedBy":1},{"id":"src\\types\\data-contracts.ts","label":"data-contracts.ts","path":"src\\types\\data-contracts.ts","cluster":"src\\types\\data-contracts.ts","clusterLabel":"src\\types\\data-contracts.ts","imports":0,"importedBy":1},{"id":"app\\articles\\create\\page.tsx","label":"page.tsx","path":"app\\articles\\create\\page.tsx","cluster":"app\\articles\\create\\page.tsx","clusterLabel":"app\\articles\\create\\page.tsx","imports":0,"importedBy":0},{"id":"app\\articles\\edit\\page.tsx","label":"page.tsx","path":"app\\articles\\edit\\page.tsx","cluster":"app\\articles\\edit\\page.tsx","clusterLabel":"app\\articles\\edit\\page.tsx","imports":0,"importedBy":0},{"id":"app\\articles\\layout.tsx","label":"layout.tsx","path":"app\\articles\\layout.tsx","cluster":"app\\articles\\layout.tsx","clusterLabel":"app\\articles\\layout.tsx","imports":0,"importedBy":0},{"id":"app\\articles\\page\\[page]\\page.tsx","label":"page.tsx","path":"app\\articles\\page\\[page]\\page.tsx","cluster":"app\\articles\\page\\[page]\\page.tsx","clusterLabel":"app\\articles\\page\\[page]\\page.tsx","imports":0,"importedBy":0},{"id":"app\\articles\\page.tsx","label":"page.tsx","path":"app\\articles\\page.tsx","cluster":"app\\articles\\page.tsx","clusterLabel":"app\\articles\\page.tsx","imports":0,"importedBy":0},{"id":"app\\layout.tsx","label":"layout.tsx","path":"app\\layout.tsx","cluster":"app\\layout.tsx","clusterLabel":"app\\layout.tsx","imports":0,"importedBy":0},{"id":"app\\login\\page.tsx","label":"page.tsx","path":"app\\login\\page.tsx","cluster":"app\\login\\page.tsx","clusterLabel":"app\\login\\page.tsx","imports":2,"importedBy":0},{"id":"app\\page.tsx","label":"page.tsx","path":"app\\page.tsx","cluster":"app\\page.tsx","clusterLabel":"app\\page.tsx","imports":2,"importedBy":0},{"id":"app\\register\\page.tsx","label":"page.tsx","path":"app\\register\\page.tsx","cluster":"app\\register\\page.tsx","clusterLabel":"app\\register\\page.tsx","imports":2,"importedBy":0},{"id":"middleware.ts","label":"middleware.ts","path":"middleware.ts","cluster":"middleware.ts","clusterLabel":"middleware.ts","imports":0,"importedBy":0},{"id":"next.config.ts","label":"next.config.ts","path":"next.config.ts","cluster":"next.config.ts","clusterLabel":"next.config.ts","imports":0,"importedBy":0},{"id":"src\\components\\major\\icons\\index.ts","label":"index.ts","path":"src\\components\\major\\icons\\index.ts","cluster":"src\\components\\major\\icons\\index.ts","clusterLabel":"src\\components\\major\\icons\\index.ts","imports":1,"importedBy":0},{"id":"src\\services\\api\\auth-services.ts","label":"auth-services.ts","path":"src\\services\\api\\auth-services.ts","cluster":"src\\services\\api\\auth-services.ts","clusterLabel":"src\\services\\api\\auth-services.ts","imports":0,"importedBy":0},{"id":"src\\services\\api\\blogpost-services.ts","label":"blogpost-services.ts","path":"src\\services\\api\\blogpost-services.ts","cluster":"src\\services\\api\\blogpost-services.ts","clusterLabel":"src\\services\\api\\blogpost-services.ts","imports":0,"importedBy":0},{"id":"src\\services\\api\\http-client.ts","label":"http-client.ts","path":"src\\services\\api\\http-client.ts","cluster":"src\\services\\api\\http-client.ts","clusterLabel":"src\\services\\api\\http-client.ts","imports":0,"importedBy":0},{"id":"src\\types\\index.ts","label":"index.ts","path":"src\\types\\index.ts","cluster":"src\\types\\index.ts","clusterLabel":"src\\types\\index.ts","imports":2,"importedBy":0}],"edges":[{"source":"app\\login\\page.tsx","target":"src\\components\\ui\\button.tsx"},{"source":"app\\login\\page.tsx","target":"src\\components\\ui\\input.tsx"},{"source":"app\\page.tsx","target":"src\\components\\ui\\button.tsx"},{"source":"app\\page.tsx","target":"src\\components\\ui\\input.tsx"},{"source":"app\\register\\page.tsx","target":"src\\components\\ui\\button.tsx"},{"source":"app\\register\\page.tsx","target":"src\\components\\ui\\input.tsx"},{"source":"src\\components\\major\\icons\\check-circle-icon.tsx","target":"src\\types\\common.ts"},{"source":"src\\components\\major\\icons\\index.ts","target":"src\\components\\major\\icons\\check-circle-icon.tsx"},{"source":"src\\components\\major\\icons\\spinner-icon.tsx","target":"src\\types\\common.ts"},{"source":"src\\components\\ui\\button.tsx","target":"src\\components\\ui\\spinner.tsx"},{"source":"src\\components\\ui\\spinner.tsx","target":"src\\components\\major\\icons\\spinner-icon.tsx"},{"source":"src\\types\\index.ts","target":"src\\types\\data-contracts.ts"},{"source":"src\\types\\index.ts","target":"src\\types\\common.ts"}]};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let tab = 'chord';
+let sel = null;
+let sim = null;
+let drawEpoch = 0;
+
+// ── Colors ─────────────────────────────────────────────────────────────────
+const PALETTE = [
+  '#7c6af7','#34d399','#f87171','#fbbf24','#60a5fa',
+  '#f472b6','#a78bfa','#2dd4bf','#fb923c','#94a3b8',
+  '#c084fc','#4ade80','#38bdf8','#e879f9','#facc15',
+  '#6ee7b7','#93c5fd','#fda4af','#d8b4fe','#86efac',
+  '#7dd3fc','#fcd34d','#a5b4fc','#6d28d9','#047857',
+  '#b45309','#1e40af',
+];
+const clusterColor = (id) => { let h = 5381n; for (const c of id) h = (h * 33n + BigInt(c.charCodeAt(0))) & 0xFFFFFFFFn; return PALETTE[Number(h) % PALETTE.length]; };
+
+function modularColor(v) {
+  if (v >= 0.67) return '#34d399';
+  if (v >= 0.34) return '#fbbf24';
+  return '#f87171';
+}
+
+function regroup() {
+  return { clusters: G.clusters, clusterEdges: G.clusterEdges };
+}
+
+function destroyTab() {
+  if (sim) { sim.stop(); sim = null; }
+  const svg = d3.select('#svg');
+  svg.selectAll('*').remove();
+  svg.attr('viewBox', null);
+  svg.on('.zoom', null);
+  document.getElementById('svg').style.display = 'block';
+  document.getElementById('canvas-wrap').style.overflow = 'hidden';
+  const mwrap = document.getElementById('matrix-wrap');
+  mwrap.style.display = 'none';
+  mwrap.innerHTML = '';
+  const swrap = document.getElementById('suggest-wrap');
+  swrap.style.display = 'none';
+  swrap.innerHTML = '';
+  hideTip();
+}
+
+function switchTab(t) {
+  if (t === tab) return;
+  destroyTab();
+  tab = t;
+  document.getElementById('view-sel').value = t;
+  document.getElementById('dag-controls').style.display = t === 'dag' ? 'flex' : 'none';
+  draw();
+}
+
+// ── Suggestions logic ──────────────────────────────────────────────────────
+function computeSuggestions(threshold) {
+  const clusterById = Object.fromEntries(G.clusters.map(c => [c.id, c]));
+  const fileByPath  = Object.fromEntries(G.files.map(f => [f.path, f]));
+  const fileExternalOut = {}, fileExternalIn = {};
+  for (const e of G.edges) {
+    const sf = fileByPath[e.source], tf = fileByPath[e.target];
+    if (!sf || !tf || sf.cluster === tf.cluster) continue;
+    if (!fileExternalOut[e.source]) fileExternalOut[e.source] = {};
+    fileExternalOut[e.source][tf.cluster] = (fileExternalOut[e.source][tf.cluster] ?? 0) + 1;
+    if (!fileExternalIn[e.target]) fileExternalIn[e.target] = {};
+    fileExternalIn[e.target][sf.cluster] = (fileExternalIn[e.target][sf.cluster] ?? 0) + 1;
+  }
+  function dominant(filePath, ownCluster) {
+    const out = fileExternalOut[filePath] ?? {}, inn = fileExternalIn[filePath] ?? {};
+    const scores = {};
+    for (const [c,n] of Object.entries(out)) { if (c !== ownCluster) scores[c] = (scores[c]??0) + n*2; }
+    for (const [c,n] of Object.entries(inn)) { if (c !== ownCluster) scores[c] = (scores[c]??0) + n; }
+    const best = Object.entries(scores).sort((a,b) => b[1]-a[1])[0];
+    return best ? {cluster:best[0], score:best[1]} : null;
+  }
+  const badClusters = G.clusters.filter(c => c.modularity > threshold).sort((a,b) => b.modularity - a.modularity);
+  const allMvs = [];
+  const clusterResults = badClusters.map(cluster => {
+    const files = G.files.filter(f => f.cluster === cluster.id);
+    const sugs = [];
+    for (const f of files) {
+      const dom = dominant(f.path, cluster.id);
+      if (!dom) continue;
+      const totalExt = Object.values(fileExternalOut[f.path]??{}).reduce((s,n)=>s+n,0)
+                     + Object.values(fileExternalIn[f.path] ??{}).reduce((s,n)=>s+n,0);
+      const affinity = totalExt === 0 ? 0 : +(dom.score / (dom.score + totalExt - dom.score + 1)).toFixed(2);
+      if (dom.score >= 2) {
+        sugs.push({
+          file: f.path,
+          fromCluster: cluster.id, fromLabel: cluster.label,
+          toCluster: dom.cluster,  toLabel: clusterById[dom.cluster]?.label ?? dom.cluster,
+          score: dom.score, affinity,
+          confidence: affinity >= 0.7 ? 'high' : affinity >= 0.4 ? 'medium' : 'low'
+        });
+      }
+    }
+    sugs.sort((a,b) => b.score - a.score);
+    allMvs.push(...sugs.slice(0,10));
+    return { cluster, suggestions: sugs.slice(0,10) };
+  });
+  const gitMvs = allMvs.map(s => {
+    const fn = s.file.split('/').pop();
+    return 'git mv src/' + s.file + ' src/' + s.toCluster + '/' + fn;
+  });
+  return { threshold, badClusters: clusterResults, gitMvCommands: gitMvs };
+}
+
+function drawSuggestions() {
+  document.getElementById('svg').style.display = 'none';
+  document.getElementById('canvas-wrap').style.overflow = 'auto';
+  const wrap = document.getElementById('suggest-wrap');
+  wrap.style.display = 'block';
+
+  const thresholdInput = wrap.querySelector('#sg-threshold-input');
+  const threshold = thresholdInput ? parseFloat(thresholdInput.value) : 0.4;
+  const result = computeSuggestions(threshold);
+
+  const confColor = conf => conf === 'high' ? 'var(--accent2)' : conf === 'medium' ? 'var(--warn)' : 'var(--muted)';
+  const modColor2 = v => v >= 0.67 ? 'var(--accent2)' : v >= 0.34 ? 'var(--warn)' : 'var(--danger)';
+
+  let html = '<div class="sg-header">' +
+    '<div class="sg-title">Move Suggestions</div>' +
+    '<div class="sg-sub">' + result.badClusters.length + ' cluster(s) above threshold</div>' +
+    '<div class="sg-threshold">' +
+      '<label>Threshold</label>' +
+      '<input id="sg-threshold-input" type="number" min="0" max="1" step="0.05" value="' + threshold + '">' +
+      '<button class="btn" onclick="drawSuggestions()">Run</button>' +
+    '</div>' +
+  '</div>';
+
+  if (result.badClusters.length === 0) {
+    html += '<div class="sg-empty">All clusters below threshold ' + threshold + '. Nothing to suggest.</div>';
+  } else {
+    for (const { cluster, suggestions } of result.badClusters) {
+      const mc = modColor2(cluster.modularity);
+      html += '<div class="sg-cluster-block">' +
+        '<div class="sg-cluster-hdr">' +
+          '<div>' +
+            '<div class="sg-cluster-name">' + (cluster.label ?? cluster.id) + '</div>' +
+            '<div class="sg-cluster-path">src/' + cluster.id + '</div>' +
+          '</div>' +
+          '<span class="sg-mpill" style="color:' + mc + ';border-color:' + mc + '">M=' + cluster.modularity + '</span>' +
+        '</div>';
+      if (suggestions.length === 0) {
+        html += '<div class="sg-empty">No strong move candidates (files diffusely coupled)</div>';
+      } else {
+        for (const s of suggestions) {
+          const cc = confColor(s.confidence);
+          html += '<div class="sg-row">' +
+            '<div>' +
+              '<div class="sg-file">src/' + s.file + '</div>' +
+              '<div class="sg-dest">→ <span>' + s.toLabel + '</span>  <span style="color:var(--muted)">src/' + s.toCluster + '/</span></div>' +
+            '</div>' +
+            '<div class="sg-badges">' +
+              '<span class="sg-badge" style="color:' + cc + ';border-color:' + cc + '">' + s.confidence + '</span>' +
+              '<span class="sg-badge" style="color:var(--muted);border-color:var(--border)">score ' + s.score + '</span>' +
+            '</div>' +
+          '</div>';
+        }
+      }
+      html += '</div>';
+    }
+  }
+
+  if (result.gitMvCommands.length > 0) {
+    html += '<div id="sg-gitcmds">' +
+      '<div class="sg-gitcmds-hdr">git mv commands' +
+        '<button class="sg-copy-btn" onclick="navigator.clipboard.writeText(document.getElementById(&quot;sg-gitcmds-body&quot;).textContent)">Copy all</button>' +
+      '</div>' +
+      '<pre class="sg-gitcmds-body" id="sg-gitcmds-body"></pre>' +
+    '</div>';
+  }
+
+  wrap.innerHTML = html;
+  const pre = document.getElementById('sg-gitcmds-body');
+  if (pre) pre.textContent = result.gitMvCommands.join(String.fromCharCode(10));
+}
+
+function renderSidebar(clusters) {
+  const body = document.getElementById('sb-body');
+  document.getElementById('cluster-count').textContent = clusters.length;
+  body.innerHTML = '';
+  const sorted = [...clusters].sort((a, b) => b.files - a.files);
+  for (const c of sorted) {
+    const div = document.createElement('div');
+    div.className = 'ci' + (c.id === sel ? ' sel' : '');
+    const col = clusterColor(c.id);
+    const icol = modularColor(c.modularity);
+    div.innerHTML =
+      '<div style="display:flex;align-items:center;gap:6px">' +
+        '<div style="width:8px;height:8px;border-radius:2px;flex-shrink:0;background:' + col + '"></div>' +
+        '<div class="ci-name" title="' + c.id + '">' + (c.label ?? c.id) + '</div>' +
+      '</div>' +
+      '<div class="ci-stats">' +
+        '<span class="pill hi">' + c.files + ' files</span>' +
+        '<span class="pill">↑' + c.outEdges + ' ↓' + c.inEdges + '</span>' +
+        '<span class="pill" style="color:' + icol + ';border-color:' + icol + '">M=' + c.modularity + '</span>' +
+      '</div>' +
+      '<div class="ibar"><div class="ifill" style="width:' + (c.modularity * 100) + '%;background:' + icol + '"></div></div>';
+    div.addEventListener('click', () => {
+      sel = sel === c.id ? null : c.id;
+      highlight(sel);
+      renderSidebar(clusters);
+    });
+    body.appendChild(div);
+  }
+}
+
+function highlight(id) {
+  if (!id) { d3.selectAll('.node,.edge-path,.chord-arc,.chord-ribbon').classed('dimmed', false); return; }
+  d3.selectAll('.node').classed('dimmed', d => d.id !== id);
+  d3.selectAll('.edge-path').classed('dimmed', d => {
+    const s = typeof d.source === 'object' ? d.source.id : d.source;
+    const t = typeof d.target === 'object' ? d.target.id : d.target;
+    return s !== id && t !== id;
+  });
+}
+
+const tip = document.getElementById('tip');
+function showTip(e, d, type) {
+  let html = '';
+  if (type === 'cluster') {
+    html = '<div class="tip-title">' + (d.label ?? d.id) + '</div>' +
+      row('Path', d.id) + row('Files', d.files) +
+      row('Out-deps', d.outEdges) + row('In-deps', d.inEdges) +
+      row('Coupling (ext)', d.coupling ?? d.outEdges + d.inEdges) +
+      row('Cohesion (int)', d.cohesion ?? d.internalEdges ?? '—') +
+      row('Modularity', d.modularity + ' (0=coupled, 1=modular)');
+  } else {
+    html = '<div class="tip-title">' + d.label + '</div>' +
+      row('Path', d.path) + row('Imports', d.imports) + row('Imported by', d.importedBy) +
+      row('Cluster', d.cluster);
+  }
+  tip.innerHTML = html;
+  tip.style.opacity = 1;
+  moveTip(e);
+}
+function row(k, v) { return '<div class="tip-row"><span>' + k + '</span><span class="tip-val">' + v + '</span></div>'; }
+function moveTip(e) { tip.style.left = (e.clientX + 14) + 'px'; tip.style.top = (e.clientY - 10) + 'px'; }
+function hideTip() { tip.style.opacity = 0; }
+
+function draw() {
+  destroyTab();
+  const epoch = ++drawEpoch;
+  const svg = d3.select('#svg');
+  const { clusters, clusterEdges } = regroup();
+  renderSidebar(clusters);
+  document.getElementById('hdr-meta').textContent =
+    clusters.length + ' clusters · ' + clusterEdges.length + ' inter-deps · ' + G.meta.totalFiles + ' files · ' + G.meta.totalEdges + ' edges';
+  if      (tab === 'dag')         drawDAG(svg, clusters, clusterEdges, epoch);
+  else if (tab === 'force')       drawForce(svg, clusters, clusterEdges, epoch);
+  else if (tab === 'matrix')      drawMatrix(clusters, clusterEdges);
+  else if (tab === 'chord')       drawChord(svg, clusters, clusterEdges);
+  else if (tab === 'suggestions') drawSuggestions();
+}
+
+function fitView(svg, g, zoom, W, H, epoch) {
+  if (epoch !== undefined && epoch !== drawEpoch) return;
+  try {
+    const bb = g.node().getBBox();
+    if (!bb || bb.width === 0) return;
+    const pad = 48;
+    const scale = Math.min((W - pad * 2) / bb.width, (H - pad * 2) / bb.height, 2) * 0.95;
+    const tx = W / 2 - (bb.x + bb.width  / 2) * scale;
+    const ty = H / 2 - (bb.y + bb.height / 2) * scale;
+    svg.transition().duration(400)
+      .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+  } catch {}
+}
+
+function drawDAG(svg, clusters, clusterEdges, epoch) {
+  const W = document.getElementById('canvas-wrap').clientWidth;
+  const H = document.getElementById('canvas-wrap').clientHeight;
+  const sortKey = document.getElementById('sort-sel').value;
+  const sortedC = [...clusters].sort((a, b) => {
+    if (sortKey === 'modularity') return b.modularity - a.modularity;
+    if (sortKey === 'files')       return b.files - a.files;
+    if (sortKey === 'inEdges')     return b.inEdges - a.inEdges;
+    return a.id.localeCompare(b.id);
+  });
+  const edgeMap = {}; const inMap = {};
+  for (const c of clusters) { edgeMap[c.id] = new Set(); inMap[c.id] = new Set(); }
+  for (const e of clusterEdges) { edgeMap[e.source]?.add(e.target); inMap[e.target]?.add(e.source); }
+  const NUM_BUCKETS = 5;
+  const byLayer = {};
+  for (let i = 0; i < NUM_BUCKETS; i++) byLayer[i] = [];
+  for (const c of clusters) {
+    const bucket = Math.min(NUM_BUCKETS - 1, Math.floor(c.modularity * NUM_BUCKETS));
+    byLayer[bucket].push(c);
+  }
+  for (const b of Object.values(byLayer)) b.sort((a, b) => b.inEdges - a.inEdges);
+  const layerKeys = Object.keys(byLayer).map(Number).sort((a, b) => a - b);
+  const NW = 140, NH = 44, HGAP = 24, VGAP = 72;
+  const MAX_PER_ROW = Math.max(4, Math.floor((W * 0.88) / (NW + HGAP)));
+  const pos = {};
+  let rowOffset = 0;
+  layerKeys.forEach((lk) => {
+    const row = byLayer[lk];
+    for (let chunk = 0; chunk < row.length; chunk += MAX_PER_ROW) {
+      const slice = row.slice(chunk, chunk + MAX_PER_ROW);
+      const rowW = slice.length * NW + (slice.length - 1) * HGAP;
+      const startX = -rowW / 2;
+      slice.forEach((c, ci) => { pos[c.id] = { x: startX + ci * (NW + HGAP), y: rowOffset * (NH + VGAP), w: NW, h: NH }; });
+      rowOffset++;
+    }
+  });
+  const xs = Object.values(pos).map(p => p.x);
+  const ys = Object.values(pos).map(p => p.y);
+  const minX = Math.min(...xs) - 60, maxX = Math.max(...xs) + NW + 60;
+  const minY = Math.min(...ys) - 60, maxY = Math.max(...ys) + NH + 60;
+  const defs = svg.append('defs');
+  const g = svg.append('g');
+  const zoom = d3.zoom().scaleExtent([0.08, 4]).on('zoom', e => g.attr('transform', e.transform));
+  svg.call(zoom);
+  defs.append('marker').attr('id', 'arr').attr('viewBox', '0 -4 8 8')
+    .attr('refX', 8).attr('refY', 0).attr('markerWidth', 6).attr('markerHeight', 6)
+    .attr('orient', 'auto').append('path').attr('d', 'M0,-4L8,0L0,4').attr('fill', '#5a6480');
+  const cmap = {};
+  for (const c of clusters) cmap[c.id] = clusterColor(c.id);
+  const edgeG = g.append('g').attr('class', 'edges');
+  const weightMap = {};
+  for (const e of clusterEdges) weightMap[e.source + '→' + e.target] = e.weight;
+  const maxW = Math.max(...clusterEdges.map(e => e.weight), 1);
+  edgeG.selectAll('path')
+    .data(clusterEdges.filter(e => pos[e.source] && pos[e.target]))
+    .join('path').attr('class', 'edge-path')
+    .attr('stroke', d => cmap[d.source] + 'bb')
+    .attr('stroke-width', d => 1 + (d.weight / maxW) * 4)
+    .attr('d', d => {
+      const s = pos[d.source], t = pos[d.target];
+      const sx = s.x + s.w / 2, sy = s.y + s.h;
+      const tx = t.x + t.w / 2, ty = t.y;
+      const my = (sy + ty) / 2;
+      if (Math.abs(sx - tx) < 4) return 'M' + sx + ',' + sy + ' L' + tx + ',' + ty;
+      return 'M' + sx + ',' + sy + ' L' + sx + ',' + my + ' L' + tx + ',' + my + ' L' + tx + ',' + ty;
+    })
+    .on('mouseover', (e, d) => { const w = weightMap[d.source + '→' + d.target] ?? d.weight; tip.innerHTML = '<div class="tip-title">' + d.source + ' → ' + d.target + '</div>' + row('Import count', w); tip.style.opacity = 1; moveTip(e); })
+    .on('mousemove', moveTip).on('mouseout', hideTip);
+  const nodeG = g.append('g').attr('class', 'nodes');
+  const nodeGroups = nodeG.selectAll('g').data(clusters.filter(c => pos[c.id])).join('g')
+    .attr('class', 'node').attr('transform', d => 'translate(' + pos[d.id].x + ',' + pos[d.id].y + ')')
+    .style('cursor', 'pointer')
+    .on('mouseover', (e, d) => showTip(e, d, 'cluster')).on('mousemove', moveTip).on('mouseout', hideTip)
+    .on('click', (e, d) => { sel = sel === d.id ? null : d.id; highlight(sel); renderSidebar(clusters); });
+  nodeGroups.append('rect').attr('class', 'node-rect').attr('width', NW).attr('height', NH).attr('rx', 8)
+    .attr('fill', d => cmap[d.id] + '22').attr('stroke', d => cmap[d.id]).attr('stroke-width', 1.5);
+  nodeGroups.append('rect').attr('y', NH - 4).attr('height', 4).attr('width', 0).attr('rx', 2)
+    .attr('fill', d => modularColor(d.modularity)).transition().duration(500).attr('width', d => NW * d.modularity);
+  nodeGroups.append('text').attr('class', 'node-label').attr('x', NW / 2).attr('y', NH / 2 - 5)
+    .text(d => { const lbl = d.label ?? d.id; return lbl.length > 16 ? lbl.slice(0, 14) + '…' : lbl; });
+  nodeGroups.append('text').attr('class', 'node-sub').attr('x', NW / 2).attr('y', NH / 2 + 8).attr('fill', '#5a6480')
+    .text(d => d.files + ' files · M=' + d.modularity);
+  requestAnimationFrame(() => fitView(svg, g, zoom, W, H, epoch));
+}
+
+function drawForce(svg, clusters, clusterEdges, epoch) {
+  const W = document.getElementById('canvas-wrap').clientWidth;
+  const H = document.getElementById('canvas-wrap').clientHeight;
+  const zoom = d3.zoom().scaleExtent([0.1, 6]).on('zoom', e => g.attr('transform', e.transform));
+  svg.call(zoom);
+  const g = svg.append('g');
+  const defs = svg.append('defs');
+  defs.append('marker').attr('id', 'arr').attr('viewBox', '0 -4 8 8')
+    .attr('refX', 8).attr('refY', 0).attr('markerWidth', 5).attr('markerHeight', 5)
+    .attr('orient', 'auto').append('path').attr('d', 'M0,-4L8,0L0,4').attr('fill', '#5a6480');
+  const maxFiles = d3.max(clusters, d => d.files) || 1;
+  const rScale = d3.scaleSqrt().domain([1, maxFiles]).range([18, 60]);
+  const maxW = Math.max(...clusterEdges.map(e => e.weight), 1);
+  const nodes = clusters.map(c => ({ ...c }));
+  const nodeById = Object.fromEntries(nodes.map(n => [n.id, n]));
+  const links = clusterEdges.filter(e => nodeById[e.source] && nodeById[e.target]).map(e => ({ ...e }));
+  const linkG = g.append('g');
+  const link = linkG.selectAll('path').data(links).join('path').attr('class', 'edge-path')
+    .attr('stroke', d => clusterColor(d.source) + '99')
+    .attr('stroke-width', d => 0.8 + (d.weight / maxW) * 5)
+    .on('mouseover', (e, d) => { tip.innerHTML = '<div class="tip-title">' + d.source + ' → ' + d.target + '</div>' + row('Count', d.weight); tip.style.opacity = 1; moveTip(e); })
+    .on('mousemove', moveTip).on('mouseout', hideTip);
+  const nodeG = g.append('g');
+  const node = nodeG.selectAll('g').data(nodes).join('g').attr('class', 'node').style('cursor', 'pointer')
+    .call(d3.drag()
+      .on('start', (e, d) => { if (!e.active) sim.alphaTarget(.3).restart(); d.fx = d.x; d.fy = d.y; })
+      .on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
+      .on('end',   (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }))
+    .on('mouseover', (e, d) => showTip(e, d, 'cluster')).on('mousemove', moveTip).on('mouseout', hideTip)
+    .on('click', (e, d) => { sel = sel === d.id ? null : d.id; highlight(sel); renderSidebar(clusters); });
+  node.append('circle').attr('r', d => rScale(d.files)).attr('fill', d => clusterColor(d.id) + '28')
+    .attr('stroke', d => modularColor(d.modularity)).attr('stroke-width', 3);
+  node.append('circle').attr('r', d => rScale(d.files) - 3).attr('fill', 'none')
+    .attr('stroke', d => clusterColor(d.id)).attr('stroke-width', 1).attr('stroke-opacity', 0.5);
+  node.append('text').attr('class', 'node-label').attr('y', -4).text(d => { const lbl = d.label ?? d.id; return lbl.length > 12 ? lbl.slice(0, 11) + '…' : lbl; });
+  node.append('text').attr('class', 'node-sub').attr('y', 10).text(d => d.files + 'f');
+  function applyPositions() {
+    link.attr('d', d => { const dx = d.target.x - d.source.x, dy = d.target.y - d.source.y; const dist = Math.sqrt(dx * dx + dy * dy) || 1; const curve = dist * 0.25; const mx = (d.source.x + d.target.x) / 2 - curve * dy / dist; const my = (d.source.y + d.target.y) / 2 + curve * dx / dist; const tr = rScale(d.target.files || 1); const tx = d.target.x - (dx / dist) * tr; const ty = d.target.y - (dy / dist) * tr; return 'M' + d.source.x + ',' + d.source.y + ' Q' + mx + ',' + my + ' ' + tx + ',' + ty; });
+    node.attr('transform', d => 'translate(' + d.x + ',' + d.y + ')');
+  }
+  sim = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(links).id(d => d.id).distance(d => 60 + rScale(d.source.files || 1) + rScale(d.target.files || 1)).strength(.25))
+    .force('charge', d3.forceManyBody().strength(d => -Math.pow(rScale(d.files), 2) * 3))
+    .force('center', d3.forceCenter(0, 0))
+    .force('collide', d3.forceCollide(d => rScale(d.files) + 20)).stop();
+  const tickCount = Math.ceil(Math.log(sim.alphaMin()) / Math.log(1 - sim.alphaDecay()));
+  for (let i = 0; i < tickCount; i++) sim.tick();
+  applyPositions();
+  fitView(svg, g, zoom, W, H, epoch);
+  sim.on('tick', applyPositions).restart();
+}
+
+function drawMatrix(clusters, clusterEdges) {
+  document.getElementById('svg').style.display = 'none';
+  document.getElementById('canvas-wrap').style.overflow = 'auto';
+  const wrap = document.getElementById('matrix-wrap');
+  wrap.style.display = 'flex';
+  wrap.innerHTML = '';
+  const sorted = [...clusters].sort((a, b) => b.outEdges + b.inEdges - (a.outEdges + a.inEdges));
+  const ids = sorted.map(c => c.id);
+  const n = ids.length;
+  const mat = Array.from({ length: n }, () => new Array(n).fill(0));
+  const idIdx = Object.fromEntries(ids.map((id, i) => [id, i]));
+  for (const e of clusterEdges) { const si = idIdx[e.source], ti = idIdx[e.target]; if (si !== undefined && ti !== undefined) mat[si][ti] = e.weight; }
+  const maxVal = Math.max(...mat.flat(), 1);
+  const CELL = 28, LABEL = 120;
+  const totalW = LABEL + n * CELL + 20, totalH = LABEL + n * CELL + 20;
+  const svgEl = d3.create('svg').attr('width', totalW).attr('height', totalH);
+  const defs = svgEl.append('defs');
+  const colorScale = d3.scaleSequential().domain([0, maxVal]).interpolator(d3.interpolate('#111420', '#7c6af7'));
+  const hotScale = d3.scaleSequential().domain([0, maxVal]).interpolator(d3.interpolate('#111420', '#f87171'));
+  const g = svgEl.append('g').attr('transform', 'translate(' + LABEL + ',' + LABEL + ')');
+  svgEl.append('g').attr('transform', 'translate(' + LABEL + ',0)').selectAll('text').data(ids).join('text')
+    .attr('x', (d, i) => i * CELL + CELL / 2).attr('y', LABEL - 6).attr('fill', (d, i) => clusterColor(d))
+    .attr('font-size', 9).attr('text-anchor', 'start')
+    .attr('transform', (d, i) => 'rotate(-55,' + (i * CELL + CELL / 2) + ',' + (LABEL - 6) + ')')
+    .text(d => d.length > 14 ? d.slice(0, 13) + '…' : d);
+  svgEl.append('g').attr('transform', 'translate(0,' + LABEL + ')').selectAll('text').data(ids).join('text')
+    .attr('x', LABEL - 6).attr('y', (d, i) => i * CELL + CELL / 2 + 3).attr('fill', (d, i) => clusterColor(d))
+    .attr('font-size', 9).attr('text-anchor', 'end').text(d => d.length > 14 ? d.slice(0, 13) + '…' : d);
+  for (let r = 0; r < n; r++) {
+    for (let c = 0; c < n; c++) {
+      const val = mat[r][c];
+      const bidirectional = val > 0 && mat[c][r] > 0;
+      const fill = val === 0 ? (r === c ? '#1e2240' : '#0d0f18') : (bidirectional ? hotScale(val) : colorScale(val));
+      g.append('rect').attr('class', 'grid-cell').attr('x', c * CELL).attr('y', r * CELL)
+        .attr('width', CELL - 2).attr('height', CELL - 2).attr('fill', fill)
+        .attr('stroke', r === c ? '#252840' : 'none').attr('rx', 2)
+        .on('mouseover', (e) => { if (val === 0 && r !== c) return; const backVal = mat[c][r]; let html = '<div class="tip-title">' + ids[r] + ' → ' + ids[c] + '</div>' + row('Imports', val); if (backVal > 0 && r !== c) html += row('Back-imports ⚠', backVal) + row('Cycle risk', 'bidirectional'); tip.innerHTML = html; tip.style.opacity = 1; moveTip(e); })
+        .on('mousemove', moveTip).on('mouseout', hideTip);
+      if (val > 0 && r !== c) {
+        g.append('text').attr('x', c * CELL + CELL / 2 - 1).attr('y', r * CELL + CELL / 2 + 4)
+          .attr('fill', val > maxVal * 0.6 ? '#fff' : '#a0aec0').attr('font-size', 8).attr('text-anchor', 'middle')
+          .text(val > 999 ? Math.round(val / 1000) + 'k' : val);
+      }
+    }
+  }
+  const legW = 120, legH = 8;
+  const legG = svgEl.append('g').attr('transform', 'translate(' + LABEL + ',' + (LABEL + n * CELL + 10) + ')');
+  const grad = defs.append('linearGradient').attr('id', 'mat-grad').attr('x1', '0%').attr('x2', '100%');
+  grad.append('stop').attr('offset', '0%').attr('stop-color', '#111420');
+  grad.append('stop').attr('offset', '100%').attr('stop-color', '#7c6af7');
+  legG.append('rect').attr('width', legW).attr('height', legH).attr('rx', 2).attr('fill', 'url(#mat-grad)');
+  legG.append('text').attr('y', legH + 10).attr('fill', '#5a6480').attr('font-size', 9).text('0');
+  legG.append('text').attr('x', legW).attr('y', legH + 10).attr('fill', '#5a6480').attr('font-size', 9).attr('text-anchor', 'end').text(maxVal);
+  legG.append('text').attr('x', legW + 12).attr('y', legH).attr('fill', '#f87171').attr('font-size', 9).text('■ bidirectional (cycle risk)');
+  wrap.appendChild(svgEl.node());
+}
+
+function drawChord(svg, clusters, clusterEdges) {
+  const W = document.getElementById('canvas-wrap').clientWidth;
+  const H = document.getElementById('canvas-wrap').clientHeight;
+  const size = Math.min(W, H) * 0.72;
+  const R = size / 2, IR = R - 36, LABEL_R = R + 18;
+  const zoom = d3.zoom().scaleExtent([0.2, 8]).on('zoom', e => g.attr('transform', e.transform));
+  svg.call(zoom);
+  const g = svg.append('g').attr('transform', 'translate(' + (W / 2) + ',' + (H / 2) + ')');
+  const sorted = [...clusters].sort((a, b) => b.files - a.files);
+  const ids = sorted.map(c => c.id);
+  const labels = sorted.map(c => c.label ?? c.id);
+  const n = ids.length;
+  const idIdx = Object.fromEntries(ids.map((id, i) => [id, i]));
+  const mat = Array.from({ length: n }, () => new Array(n).fill(0));
+  for (const e of clusterEdges) { const si = idIdx[e.source], ti = idIdx[e.target]; if (si !== undefined && ti !== undefined) mat[si][ti] = e.weight; }
+  const chord = d3.chord().padAngle(.04).sortSubgroups(d3.descending)(mat);
+  const arc = d3.arc().innerRadius(IR).outerRadius(R);
+  const ribbon = d3.ribbon().radius(IR - 2);
+  const arcG = g.append('g');
+  arcG.selectAll('path').data(chord.groups).join('path').attr('class', 'chord-arc')
+    .attr('fill', d => clusterColor(ids[d.index]) + 'cc').attr('stroke', d => clusterColor(ids[d.index])).attr('stroke-width', .5).attr('d', arc)
+    .on('mouseover', (e, d) => { const c = sorted[d.index]; showTip(e, c, 'cluster'); sel = c.id; highlight(sel); renderSidebar(clusters); })
+    .on('mousemove', moveTip).on('mouseout', hideTip);
+  arcG.selectAll('text').data(chord.groups).join('text')
+    .attr('transform', d => { const angle = (d.startAngle + d.endAngle) / 2; const x = LABEL_R * Math.sin(angle), y = -LABEL_R * Math.cos(angle); const rot = angle * 180 / Math.PI - 90; return 'translate(' + x + ',' + y + ') rotate(' + (angle > Math.PI ? rot + 180 : rot) + ')'; })
+    .attr('text-anchor', d => { const a = (d.startAngle + d.endAngle) / 2; return a > Math.PI ? 'end' : 'start'; })
+    .attr('fill', d => clusterColor(ids[d.index])).attr('font-size', 10).text(d => labels[d.index]);
+  g.append('g').attr('fill-opacity', .65).selectAll('path').data(chord).join('path').attr('class', 'chord-ribbon')
+    .attr('d', ribbon).attr('fill', d => clusterColor(ids[d.source.index]) + '88').attr('stroke', d => clusterColor(ids[d.source.index]) + 'cc').attr('stroke-width', .4)
+    .on('mouseover', (e, d) => { tip.innerHTML = '<div class="tip-title">' + ids[d.source.index] + ' → ' + ids[d.target.index] + '</div>' + row('Count', d.source.value); tip.style.opacity = 1; moveTip(e); })
+    .on('mousemove', moveTip).on('mouseout', hideTip);
+}
+
+requestAnimationFrame(draw);
+window.addEventListener('resize', draw);
+</script>
+</body>
+</html>
