@@ -2,7 +2,7 @@
 
 import { ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import Table from "@/src/components/ui/table";
-import { Pagination } from "@/src/components/ui";
+import { Pagination, Spinner } from "@/src/components/ui";
 
 interface TableListPaginationProps {
   rowCount: number;
@@ -14,10 +14,21 @@ interface TableListPaginationProps {
 interface TableListProps<T> {
   columns: ColumnDef<T, unknown>[];
   data: T[];
+  loading?: boolean;
   pagination?: TableListPaginationProps;
 }
 
-const TableList = <T,>({ columns, data, pagination }: TableListProps<T>) => {
+const TableLoadingOverlay = () => (
+  <div
+    className="absolute inset-0 z-10 flex items-center justify-center bg-background/60"
+    aria-busy
+    aria-label="Loading table data"
+  >
+    <Spinner />
+  </div>
+);
+
+const TableList = <T,>({ columns, data, loading = false, pagination }: TableListProps<T>) => {
   const table = useReactTable({
     data,
     columns,
@@ -26,7 +37,10 @@ const TableList = <T,>({ columns, data, pagination }: TableListProps<T>) => {
 
   return (
     <div className="flex flex-col items-end gap-4">
-      <Table table={table} />
+      <div className="relative w-full">
+        <Table table={table} />
+        {loading && <TableLoadingOverlay />}
+      </div>
       {pagination && (
         <Pagination
           rowCount={pagination.rowCount}

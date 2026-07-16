@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import TableList from "@/src/components/major/table-list";
 import { articleColumns } from "@/src/configs/table-columns/article-columns";
 import { Post } from "@/src/types";
-import { Card, Spinner } from "@/src/components/ui";
+import { Card, Checkbox } from "@/src/components/ui";
 import { useBlogPostsList } from "@/src/hooks/blogpost/useBlogPostsList";
 import { useAuthenticatedUser } from "@/src/hooks";
 import { DEFAULT_PAGINATION } from "@/src/configs/constants";
@@ -31,14 +31,14 @@ const ArticlesSection: FC<ArticlesSectionProps> = ({ page }) => {
 
   return (
     <Card title="All Posts">
-      {isLoading ? (
-        <Spinner />
-      ) : blogPostsError ? (
+      <Checkbox checked={true} onCheckedChange={() => {}} />
+      {blogPostsError ? (
         <p>Failed to load posts.</p>
       ) : (
         <TableList<Post>
           columns={articleColumns}
           data={posts}
+          loading={isLoading}
           pagination={{
             rowCount: blogPosts?.total ?? 0,
             pageSize: DEFAULT_PAGINATION.pageSize,
