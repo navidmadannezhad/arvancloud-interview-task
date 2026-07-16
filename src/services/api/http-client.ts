@@ -1,7 +1,10 @@
-interface HttpClientArgs {
+export interface HttpClientArgs {
     url: string;
     options?: RequestInit;
 }
+
+export type QueryParamValue = string | number | boolean;
+export type QueryParams = Record<string, QueryParamValue | undefined | null>;
 
 const interceptRequest = (args: HttpClientArgs) => {
     args.options = {
