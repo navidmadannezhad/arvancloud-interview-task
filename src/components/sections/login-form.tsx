@@ -7,18 +7,17 @@ import { FormProvider, useForm } from "react-hook-form";
 import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/src/configs/validators";
-import { InferType } from "yup";
 import { useAuth, useToaster } from "@/src/hooks";
 import { useRouter } from "next/navigation";
 import usePermenantStore from "@/src/services/store/permenant-store";
+import { LoginUserRequestBody } from "@/src/types";
 
 interface LoginFormProps{}
-type FormValues = InferType<typeof loginSchema>;
 
 const LoginForm: FC<LoginFormProps> = () => {
     const router = useRouter();
     const { auth } = usePermenantStore();
-    const formContext = useForm<FormValues>({
+    const formContext = useForm({
         resolver: yupResolver(loginSchema),
         defaultValues: {
             username: auth.loginUsername ?? "",
@@ -30,9 +29,10 @@ const LoginForm: FC<LoginFormProps> = () => {
         loginTrigger
     } = useAuth()
     
-    const handleSubmit = (data: FormValues) => {
-        loginTrigger.mutate(data, {
-            onSuccess: (res) => {
+    const handleSubmit = (data: Partial<LoginUserRequestBody>) => {
+        // WIP -- we got type problem here
+        loginTrigger.mutate(data as LoginUserRequestBody, {
+            onSuccess: () => {
                 showSuccessToast({
                     title: "Login successful",
                     description: "You are now logged in",

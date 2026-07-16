@@ -111,7 +111,7 @@ export interface LoginUserRequestBody{
     password: string;
     expiresInMins?: number;
 }
-export interface CreateUserRequestBody extends User{};
+export interface CreateUserRequestBody extends Partial<User>{};
 export interface RefreshAuthResponse {
     accessToken: string;
     refreshToken: string;
