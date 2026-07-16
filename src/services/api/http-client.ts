@@ -1,7 +1,10 @@
-interface HttpClientArgs {
+export interface HttpClientArgs {
     url: string;
     options?: RequestInit;
 }
+
+export type QueryParamValue = string | number | boolean;
+export type QueryParams = Record<string, QueryParamValue | undefined | null>;
 
 const interceptRequest = (args: HttpClientArgs) => {
     args.options = {
@@ -16,7 +19,7 @@ const interceptRequest = (args: HttpClientArgs) => {
     return args;
 }
 
-const interceptResponse = async (response: Response) => {
+const interceptResponse = async <T>(response: Response): Promise<T> => {
     if(!response.ok)
         throw new Error(response.statusText);   
     const data = await response.json();
@@ -30,8 +33,8 @@ const httpClient = async <T, >(args: HttpClientArgs): Promise<T> => {
         interceptedArgs.url, 
         interceptedArgs.options
     );
-    const interceptedResponse = interceptResponse(response);
-    return interceptedResponse as T;
+    const interceptedResponse = interceptResponse<T>(response);
+    return interceptedResponse;
 }
 
 export default httpClient;

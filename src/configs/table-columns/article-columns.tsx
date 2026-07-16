@@ -1,0 +1,50 @@
+import { ColumnDef } from "@tanstack/react-table";
+import { Post } from "@/src/types";
+import OperationButtons from "@/src/components/major/operation-buttons";
+
+const truncate = (value: string, maxLength = 60) =>
+  value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
+
+export const articleColumns: ColumnDef<Post>[] = [
+  {
+    id: "index",
+    header: "#",
+    cell: ({ row }) => row.index + 1,
+  },
+  {
+    accessorKey: "title",
+    header: "Title",
+  },
+  {
+    id: "author",
+    header: "Author",
+    cell: ({ row }) => `@${row.original.userId}`,
+  },
+  {
+    accessorKey: "tags",
+    header: "Tags",
+    cell: ({ getValue }) => (getValue<string[]>() ?? []).join(", "),
+  },
+  {
+    id: "excerpt",
+    header: "Excerpt",
+    cell: ({ row }) => truncate(row.original.body),
+  },
+  {
+    id: "created",
+    header: "Created",
+    cell: () => null,
+  },
+  {
+    id: "operations",
+    header: "",
+    cell: () => (
+      <OperationButtons
+        operationOptions={[
+          { title: "Edit", onClick: () => {} },
+          { title: "Delete", onClick: () => {} },
+        ]}
+      />
+    ),
+  },
+];
