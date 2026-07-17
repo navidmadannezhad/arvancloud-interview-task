@@ -7,7 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "@/src/configs/validators";
-import { useAuth, useToaster } from "@/src/hooks";
+import { useAuthActions, useToaster } from "@/src/hooks";
 import { useRouter } from "next/navigation";
 import usePermenantStore from "@/src/services/store/permenant-store";
 import { CreateUserRequestBody } from "@/src/types";
@@ -29,7 +29,7 @@ const RegisterForm: FC<RegisterFormProps> = () => {
     const { showSuccessToast, showFailureToast } = useToaster();
     const {
         registerTrigger
-    } = useAuth()
+    } = useAuthActions()
     
     const handleSubmit = (data: CreateUserRequestBody) => {
         registerTrigger.mutate(data, {

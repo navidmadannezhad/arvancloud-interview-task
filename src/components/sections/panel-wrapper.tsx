@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Header, Sidebar } from "@/src/components/ui";
 import type { SidebarOption } from "@/src/components/ui";
 import DrawerWrapper from "@/src/components/major/drawer-wrapper";
-import { useAuth, useAuthenticatedUser } from "@/src/hooks";
+import { useAuthActions, useAuthenticatedUser } from "@/src/hooks";
 
 interface PanelWrapperProps {
   children: ReactNode;
@@ -15,7 +15,7 @@ interface PanelWrapperProps {
 const PanelWrapper: FC<PanelWrapperProps> = ({ children, sidebarOptions }) => {
   const pathname = usePathname();
   const { authUserData } = useAuthenticatedUser();
-  const { logoutTrigger } = useAuth();
+  const { logoutTrigger } = useAuthActions();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const options: SidebarOption[] = sidebarOptions.map((item) => ({
@@ -25,7 +25,7 @@ const PanelWrapper: FC<PanelWrapperProps> = ({ children, sidebarOptions }) => {
         ? pathname === "/articles" || pathname.startsWith("/articles/page")
         : pathname === item.link || pathname.startsWith(`${item.link}/`),
   }));
-
+  
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);

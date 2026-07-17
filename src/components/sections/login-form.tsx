@@ -7,7 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/src/configs/validators";
-import { useAuth, useToaster } from "@/src/hooks";
+import { useAuthActions, useToaster } from "@/src/hooks";
 import { useRouter } from "next/navigation";
 import usePermenantStore from "@/src/services/store/permenant-store";
 import { LoginUserRequestBody } from "@/src/types";
@@ -28,7 +28,7 @@ const LoginForm: FC<LoginFormProps> = () => {
     const { showSuccessToast, showFailureToast } = useToaster();
     const {
         loginTrigger
-    } = useAuth()
+    } = useAuthActions()
     
     const handleSubmit = (data: Partial<LoginUserRequestBody>) => {
         loginTrigger.mutate(data as LoginUserRequestBody, {
