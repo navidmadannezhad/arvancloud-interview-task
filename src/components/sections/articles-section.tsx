@@ -31,7 +31,6 @@ const ArticlesSection: FC<ArticlesSectionProps> = ({ page }) => {
 
   return (
     <Card title="All Posts">
-      <Checkbox checked={true} onCheckedChange={() => {}} />
       {articlesError ? (
         <p>Failed to load posts.</p>
       ) : (

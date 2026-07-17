@@ -1,29 +1,47 @@
+"use client";
+
 import { ColumnDef, Row } from "@tanstack/react-table";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Article } from "@/src/types";
 import OperationButtons from "@/src/components/major/operation-buttons";
-import { useRouter } from "next/navigation";
+import DeleteArticleModal from "@/src/components/major/delete-article-modal";
 
 const truncate = (value: string, maxLength = 60) =>
   value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
 
 const ArticleOperationButtons = ({ row }: { row: Row<Article> }) => {
   const router = useRouter();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
   const handleNavigateToEdit = () => {
     router.push(`/articles/edit/${row.original.id}/`);
-  }
-  // const handleNavigateToDelete = () => {
-  //   router.push(`/articles/${row.original.id}/delete`);
-  // }
+  };
+
+  const handleOpenDeleteModal = () => {
+    setDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeleteModalOpen(false);
+  };
 
   return (
-    <OperationButtons
+    <>
+      <OperationButtons
         operationOptions={[
           { title: "Edit", onClick: handleNavigateToEdit },
-          { title: "Delete", onClick: () => {} },
+          { title: "Delete", onClick: handleOpenDeleteModal },
         ]}
       />
-  )
-}
+      <DeleteArticleModal
+        open={deleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        articleId={row.original.id}
+      />
+    </>
+  );
+};
 
 export const articleColumns: ColumnDef<Article>[] = [
   {

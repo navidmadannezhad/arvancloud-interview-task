@@ -24,32 +24,37 @@ interface SimpleTagsListProps {
   onBlur?: () => void;
 }
 
-const mergeTagNames = (
+const buildTagNames = (
   customTags: string[],
-  selectedTags: string[],
   apiTagNames: string[],
+  selectedTags: string[],
 ) => {
-  const ordered: string[] = [];
+  const seen = new Set<string>();
+  const topTags: string[] = [];
 
-  customTags.forEach((tag) => {
-    if (!ordered.includes(tag)) {
-      ordered.push(tag);
+  const addTopTag = (tag: string) => {
+    if (seen.has(tag)) {
+      return;
     }
-  });
 
+    seen.add(tag);
+    topTags.push(tag);
+  };
+
+  customTags.forEach(addTopTag);
+
+  const apiTagSet = new Set(apiTagNames);
   selectedTags.forEach((tag) => {
-    if (!ordered.includes(tag)) {
-      ordered.push(tag);
+    if (!apiTagSet.has(tag)) {
+      addTopTag(tag);
     }
   });
 
-  apiTagNames.forEach((tag) => {
-    if (!ordered.includes(tag)) {
-      ordered.push(tag);
-    }
-  });
+  const sortedApiTags = [...apiTagNames]
+    .filter((tag) => !seen.has(tag))
+    .sort((a, b) => a.localeCompare(b));
 
-  return ordered;
+  return [...topTags, ...sortedApiTags];
 };
 
 export const SimpleTagsList: FC<SimpleTagsListProps> = ({
@@ -71,8 +76,8 @@ export const SimpleTagsList: FC<SimpleTagsListProps> = ({
   );
 
   const allTagNames = useMemo(
-    () => mergeTagNames(customTags, value, apiTagNames),
-    [customTags, value, apiTagNames],
+    () => buildTagNames(customTags, apiTagNames, value),
+    [customTags, apiTagNames, value],
   );
 
   const rowVirtualizer = useVirtualizer({

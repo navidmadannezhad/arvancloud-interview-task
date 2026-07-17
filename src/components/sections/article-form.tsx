@@ -1,16 +1,18 @@
 "use client"
 
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { Button, Card } from "@/src/components/ui";
 import { FormRawInput, FormTagsList, FormTextarea } from "@/src/components/major/form";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { articleSchema } from "@/src/configs/validators";
 import { useArticleDetail, useAuthenticatedUser, useToaster } from "@/src/hooks";
-import { useRouter } from "next/navigation";
-import { CreateArticleRequestBody, LoginUserRequestBody, UpdateArticleByIDRequestBody } from "@/src/types";
+import { useParams, useRouter } from "next/navigation";
+import { CreateArticleRequestBody, UpdateArticleByIDRequestBody } from "@/src/types";
 import { useArticleActions } from "@/src/hooks/article/useArticleActions";
 import { getQueryClient } from "@/src/configs/queryClient";
+import { DEFAULT_PAGINATION } from "@/src/configs/constants";
+import { ARTICLE_MESSAGES } from "@/src/configs/messages";
 
 interface ArticleFormProps{
     articleID?: number;
@@ -18,6 +20,7 @@ interface ArticleFormProps{
 
 const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
     const editMode = !!articleID;
+    const params = useParams();
     const {
         authUserData
     } = useAuthenticatedUser();
@@ -55,7 +58,6 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
     const { showSuccessToast, showFailureToast } = useToaster();
     
     const handleSubmit = (data: CreateArticleRequestBody | UpdateArticleByIDRequestBody) => {
-        // WIP -- we got type problem here
         if (editMode) {
             handleUpdateArticle(data);
         } else {
@@ -68,14 +70,19 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
         createArticleTrigger.mutate({ data: data as CreateArticleRequestBody }, {
             onSuccess: () => {
                 showSuccessToast({
-                    title: "Article created successfully",
+                    title: ARTICLE_MESSAGES.success.create,
                 });
-                queryClient.invalidateQueries({ queryKey: ["getArticlesByUserID"] });
+                queryClient.invalidateQueries({ 
+                    queryKey: [
+                        "getArticlesByUserID",
+                        { page: params?.id ?? 1, pageSize: DEFAULT_PAGINATION.pageSize }
+                    ] 
+                });
                 router.push("/articles")
             },
             onError: () => {
                 showFailureToast({
-                    title: "Article creation failed",
+                    title: ARTICLE_MESSAGES.error.create,
                     description: "Please try again",
                 });
             },
@@ -86,20 +93,25 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
         updateArticleByIDTrigger.mutate({ articleID: articleID ?? 0, data: data as UpdateArticleByIDRequestBody }, {
             onSuccess: () => {
                 showSuccessToast({
-                    title: "Article updated successfully",
+                    title: ARTICLE_MESSAGES.success.update,
                 });
-                queryClient.invalidateQueries({ queryKey: ["getArticlesByUserID"] });
+                queryClient.invalidateQueries({ 
+                    queryKey: [
+                        "getArticlesByUserID",
+                        { page: params?.id ?? 1, pageSize: DEFAULT_PAGINATION.pageSize }
+                    ] 
+                });
                 router.push("/articles")
             },
             onError: () => {
                 showFailureToast({
-                    title: "Article creation failed",
+                    title: ARTICLE_MESSAGES.error.update,
                     description: "Please try again",
                 });
             },
         })
     }
-    // WIP -- sort tags alphabetically
+    
     return (
         <FormProvider { ...formContext }>
             <form 
@@ -127,6 +139,9 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
                             loading={
                                 createArticleTrigger.isPending || updateArticleByIDTrigger.isPending
                             } 
+                            disabled={
+                                createArticleTrigger.isPending || updateArticleByIDTrigger.isPending
+                            }
                             variant="primary" 
                             className="w-fit"
                             type="submit"
