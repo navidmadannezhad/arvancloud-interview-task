@@ -11,6 +11,7 @@ const Textarea: FC<TextareaProps> = ({
 }) => {
   return (
     <textarea
+      {...rest}
       className={clsx(
         "w-full min-h-[120px] rounded-[8px] border-1 px-4 py-2 text-sm",
         "text-muted-dark placeholder:text-muted-light",
@@ -24,7 +25,6 @@ const Textarea: FC<TextareaProps> = ({
         },
         rest?.className ?? "",
       )}
-      {...rest}
     />
   );
 };

@@ -51,12 +51,11 @@ const ArticleForm: FC<ArticleFormProps> = () => {
     return (
         <FormProvider { ...formContext }>
             <form 
-                className="flex gap-4" 
+                className="flex md:flex-row flex-col gap-4" 
                 onSubmit={formContext.handleSubmit(handleSubmit)}
             >
-                
-                <div className="flex-[0.7]">
-                    <Card title="New Article">
+                <div className="md:flex-[0.7] flex-1">
+                    <Card contentClassName="flex flex-col gap-2" title="New Article">
                         <FormRawInput 
                             name="title" 
                             label="Title" 
@@ -70,10 +69,12 @@ const ArticleForm: FC<ArticleFormProps> = () => {
                         <FormTextarea 
                             name="body" 
                             label="Body"
+                            className="resize-none!"
                         />
                         <Button 
                             loading={loginTrigger.isPending} 
                             variant="primary" 
+                            className="w-fit"
                             type="submit"
                         >
                             Submit
@@ -81,7 +82,7 @@ const ArticleForm: FC<ArticleFormProps> = () => {
                     </Card>
                 </div>
 
-                <div className="flex-[0.3]">
+                <div className="md:flex-[0.3] flex-1">
                     <Card>
                         <FormTagsList 
                             name="tags" 

@@ -15,7 +15,7 @@ export const SimpleRawTextarea: FC<SimpleTextareaProps> = ({
 }) => {
   return (
     <InputWrapper label={label}>
-      <Textarea {...rest} />
+      <Textarea { ...rest } />
     </InputWrapper>
   );
 };
