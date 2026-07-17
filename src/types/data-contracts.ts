@@ -11,7 +11,7 @@ export interface Reactions {
     likes: number;
     dislikes: number;
 }
-export interface Post {
+export interface Article {
     id: number;
     title: string;
     body: string;
@@ -20,11 +20,19 @@ export interface Post {
     views: number;
     userId: number;
 }
-export type GetPostsByUserIDResponse = Response<Post, "posts">;
-export type GetPostBySlugResponse = Post;
-export type CreatePostResponse = Post;
-export type UpdatePostByIDResponse = Post;
-export type DeletePostByIDResponse = Post & {
+export interface GetArticlesByUserIDResponse extends Response<Article, "posts"> {}
+export interface GetArticleBySlugResponse extends Article {}
+export interface CreateArticleResponse extends Article {}
+export interface CreateArticleRequestBody extends Partial<Article> {
+    title: string;
+    description: string;
+    body: string;
+    tags: string[];
+    userId: number;
+}
+export interface UpdateArticleByIDRequestBody extends Partial<CreateArticleRequestBody> {}
+export interface UpdateArticleByIDResponse extends Article {}
+export interface DeleteArticleByIDResponse extends Article {
     isDeleted: boolean;
     deletedOn: string;
 };
@@ -33,7 +41,7 @@ export interface Tag{
     name: string;
     url: string;
 }
-export type GetPostTagsResponse = Tag[];
+export type GetArticleTagsResponse = Tag[];
 // User Types
 export interface User {
     id: number;

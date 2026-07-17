@@ -1,11 +1,31 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Post } from "@/src/types";
+import { ColumnDef, Row } from "@tanstack/react-table";
+import { Article } from "@/src/types";
 import OperationButtons from "@/src/components/major/operation-buttons";
+import { useRouter } from "next/navigation";
 
 const truncate = (value: string, maxLength = 60) =>
   value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
 
-export const articleColumns: ColumnDef<Post>[] = [
+const ArticleOperationButtons = ({ row }: { row: Row<Article> }) => {
+  const router = useRouter();
+  const handleNavigateToEdit = () => {
+    router.push(`/articles/edit/${row.original.id}/`);
+  }
+  // const handleNavigateToDelete = () => {
+  //   router.push(`/articles/${row.original.id}/delete`);
+  // }
+
+  return (
+    <OperationButtons
+        operationOptions={[
+          { title: "Edit", onClick: handleNavigateToEdit },
+          { title: "Delete", onClick: () => {} },
+        ]}
+      />
+  )
+}
+
+export const articleColumns: ColumnDef<Article>[] = [
   {
     id: "index",
     header: "#",
@@ -38,13 +58,6 @@ export const articleColumns: ColumnDef<Post>[] = [
   {
     id: "operations",
     header: "",
-    cell: () => (
-      <OperationButtons
-        operationOptions={[
-          { title: "Edit", onClick: () => {} },
-          { title: "Delete", onClick: () => {} },
-        ]}
-      />
-    ),
+    cell: ({ row }) => <ArticleOperationButtons row={row} />,
   },
 ];

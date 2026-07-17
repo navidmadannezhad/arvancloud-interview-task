@@ -12,7 +12,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import clsx from "clsx";
 import { Checkbox, Input, Spinner } from "@/src/components/ui";
 import InputWrapper from "./input-wrapper";
-import { useBlogPostsTagsList } from "@/src/hooks/blogpost/useBlogPostsTagsList";
+import { useArticlesTagsList } from "@/src/hooks/article/useArticlesTagsList";
 
 const TAG_ROW_HEIGHT = 36;
 const TAG_LIST_HEIGHT = 240;
@@ -62,8 +62,8 @@ export const SimpleTagsList: FC<SimpleTagsListProps> = ({
   const [customTags, setCustomTags] = useState<string[]>([]);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const { blogPosts: tags, blogPostsLoading, blogPostsError } =
-    useBlogPostsTagsList();
+  const { tags, tagsLoading, tagsError } =
+  useArticlesTagsList();
 
   const apiTagNames = useMemo(
     () => (tags ?? []).map((tag) => tag.name),
@@ -128,13 +128,13 @@ export const SimpleTagsList: FC<SimpleTagsListProps> = ({
         <div
           className={clsx(
             "rounded-lg border-1 border-muted-light bg-background p-4",
-            blogPostsLoading && "flex items-center justify-center",
+            tagsLoading && "flex items-center justify-center",
           )}
           style={{ height: TAG_LIST_HEIGHT }}
         >
-          {blogPostsLoading ? (
+          {tagsLoading ? (
             <Spinner />
-          ) : blogPostsError ? (
+          ) : tagsError ? (
             <p className="text-sm text-danger-main">Failed to load tags.</p>
           ) : (
             <div ref={listRef} className="h-full overflow-auto">
