@@ -10,7 +10,6 @@ interface ProvidersProps{
 }
 
 const Providers: FC<ProvidersProps> = ({ children }) => {
-    // WIP -- check if it's good to define queryClient in useEffect?
     return (
         <QueryClientProvider client={getQueryClient()}>
             <ToastProvider>

@@ -1,5 +1,0 @@
-import ArticleForm from "@/src/components/sections/article-form";
-
-export default function ArticlesEdit() {
-  return <ArticleForm />;
-}

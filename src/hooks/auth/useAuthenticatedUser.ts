@@ -4,7 +4,6 @@ import {
 
 const useAuthenticatedUser = () => {
     const { data, error, isPending } = useGetUserDataQuery();
- 
     return {
         authUserData: data,
         authUserDataError: error,

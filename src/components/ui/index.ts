@@ -12,3 +12,4 @@ export { default as Table } from "./table";
 export { default as Pagination } from "./pagination";
 export { default as Checkbox } from "./checkbox";
 export { default as Menu } from "./menu";
+export { default as Dialog, DialogParts } from "./dialog";

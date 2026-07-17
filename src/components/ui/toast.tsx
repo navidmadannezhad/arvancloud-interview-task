@@ -28,8 +28,6 @@ const ToastList: FC = () => {
           <RawToast.Root
             key={toast.id}
             toast={toast}
-            // WIP -- direction not working
-            // WIP -- animation not working like in document, if multiple toasts are shown, the animation is not smooth
             swipeDirection={["up", "right"]}
             className={clsx(
               "pointer-events-auto",
