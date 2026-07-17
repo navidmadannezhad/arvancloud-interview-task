@@ -5,11 +5,11 @@ import { FC, ComponentProps } from "react";
 import InputWrapper from "./input-wrapper";
 import { Controller, useFormContext } from "react-hook-form";
 
-interface SimpleRawTextareaProps extends ComponentProps<typeof Textarea> {
+interface SimpleTextareaProps extends ComponentProps<typeof Textarea> {
   label?: string;
 }
 
-export const SimpleRawTextarea: FC<SimpleRawTextareaProps> = ({
+export const SimpleRawTextarea: FC<SimpleTextareaProps> = ({
   label,
   ...rest
 }) => {
@@ -20,11 +20,11 @@ export const SimpleRawTextarea: FC<SimpleRawTextareaProps> = ({
   );
 };
 
-interface FormRawTextareaProps extends SimpleRawTextareaProps {
+interface FormTextareaProps extends SimpleTextareaProps {
   name: string;
 }
 
-export const FormRawTextarea: FC<FormRawTextareaProps> = ({
+export const FormTextarea: FC<FormTextareaProps> = ({
   name,
   ...rest
 }) => {

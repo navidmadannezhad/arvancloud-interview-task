@@ -11,7 +11,6 @@ export interface Reactions {
     likes: number;
     dislikes: number;
 }
-
 export interface Post {
     id: number;
     title: string;
@@ -29,7 +28,12 @@ export type DeletePostByIDResponse = Post & {
     isDeleted: boolean;
     deletedOn: string;
 };
-
+export interface Tag{
+    slug: string;
+    name: string;
+    url: string;
+}
+export type GetPostTagsResponse = Tag[];
 // User Types
 export interface User {
     id: number;

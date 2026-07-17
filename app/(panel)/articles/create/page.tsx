@@ -1,5 +1,5 @@
-import ArticlesSection from "@/src/components/sections/articles-section";
+import ArticleForm from "@/src/components/sections/article-form";
 
 export default function ArticlesCreate() {
-  return <div>ArticlesCreate</div>;
+  return <ArticleForm />;
 }
