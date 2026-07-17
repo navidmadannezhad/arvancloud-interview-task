@@ -1,9 +1,10 @@
 "use client";
 
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Header, Sidebar } from "@/src/components/ui";
 import type { SidebarOption } from "@/src/components/ui";
+import DrawerWrapper from "@/src/components/major/drawer-wrapper";
 import { useAuth, useAuthenticatedUser } from "@/src/hooks";
 
 interface PanelWrapperProps {
@@ -15,6 +16,7 @@ const PanelWrapper: FC<PanelWrapperProps> = ({ children, sidebarOptions }) => {
   const pathname = usePathname();
   const { authUserData } = useAuthenticatedUser();
   const { logoutTrigger } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const options: SidebarOption[] = sidebarOptions.map((item) => ({
     ...item,
@@ -24,20 +26,42 @@ const PanelWrapper: FC<PanelWrapperProps> = ({ children, sidebarOptions }) => {
         : pathname === item.link || pathname.startsWith(`${item.link}/`),
   }));
 
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header
         username={authUserData?.username ?? "..."}
         onLogout={logoutTrigger}
+        onMenuClick={() => setMenuOpen(true)}
       />
       <div className="flex flex-1">
-        <Sidebar options={options} height="100%" className="min-h-full" />
-        <div className="flex-1 bg-secondary-main p-4">
-          {children}
-        </div>
+        <Sidebar
+          options={options}
+          height="100%"
+          className="hidden min-h-full md:block"
+        />
+        <div className="flex-1 md:w-unset w-full bg-secondary-main p-4">{children}</div>
       </div>
+      <DrawerWrapper
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        title="Menu"
+        side="right"
+        contentClassName="p-4"
+      >
+        <Sidebar
+          options={options}
+          height="100%"
+          width="100%"
+          className="min-h-full p-0"
+        />
+      </DrawerWrapper>
     </div>
   );
 };
 
 export default PanelWrapper;
+

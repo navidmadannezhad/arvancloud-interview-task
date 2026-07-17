@@ -33,6 +33,8 @@ const TableList = <T,>({ columns, data, loading = false, pagination }: TableList
   const table = useReactTable({
     data,
     columns,
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
     getCoreRowModel: getCoreRowModel(),
   });
 

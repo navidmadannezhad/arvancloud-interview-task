@@ -13,3 +13,5 @@ export { default as Pagination } from "./pagination";
 export { default as Checkbox } from "./checkbox";
 export { default as Menu } from "./menu";
 export { default as Dialog, DialogParts } from "./dialog";
+export { default as Drawer, DrawerParts } from "./drawer";
+export type { DrawerSide } from "./drawer";
