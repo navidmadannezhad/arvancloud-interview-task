@@ -81,7 +81,7 @@ const Button: FC<ButtonProps> = ({
                     }
                     tailColor={
                         variant === "muted" ? "var(--muted-dark)"
-                        : "var(--muted-light)"
+                        : "var(--background)"
                     }
                 />
             ) : children}

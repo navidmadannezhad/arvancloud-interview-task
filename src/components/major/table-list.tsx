@@ -29,6 +29,7 @@ const TableLoadingOverlay = () => (
 );
 
 const TableList = <T,>({ columns, data, loading = false, pagination }: TableListProps<T>) => {
+  // eslint-disable-next-line
   const table = useReactTable({
     data,
     columns,

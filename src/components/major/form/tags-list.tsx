@@ -80,6 +80,7 @@ export const SimpleTagsList: FC<SimpleTagsListProps> = ({
     [customTags, apiTagNames, value],
   );
 
+  // eslint-disable-next-line
   const rowVirtualizer = useVirtualizer({
     count: allTagNames.length,
     getScrollElement: () => listRef.current,

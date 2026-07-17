@@ -27,6 +27,15 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
     const {
         article: articleDetailResponse
     } = useArticleDetail(articleID);
+    const formContext = useForm<CreateArticleRequestBody | UpdateArticleByIDRequestBody>({
+        resolver: yupResolver(articleSchema),
+        defaultValues: {
+            title: "",
+            body: "",
+            tags: [],
+            userId: authUserData?.id,
+        },
+    });
 
     useEffect(() => {
         if (editMode && articleDetailResponse) {
@@ -46,15 +55,6 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
     } = useArticleActions();
 
     const queryClient = getQueryClient();
-    const formContext = useForm<CreateArticleRequestBody | UpdateArticleByIDRequestBody>({
-        resolver: yupResolver(articleSchema),
-        defaultValues: {
-            title: "",
-            body: "",
-            tags: [],
-            userId: authUserData?.id,
-        },
-    });
     const { showSuccessToast, showFailureToast } = useToaster();
     
     const handleSubmit = (data: CreateArticleRequestBody | UpdateArticleByIDRequestBody) => {

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import TableList from "@/src/components/major/table-list";
 import { articleColumns } from "@/src/configs/table-columns/article-columns";
 import { Article } from "@/src/types";
-import { Card, Checkbox } from "@/src/components/ui";
+import { Card } from "@/src/components/ui";
 import { useArticlesList } from "@/src/hooks/article/useArticlesList";
 import { useAuthenticatedUser } from "@/src/hooks";
 import { DEFAULT_PAGINATION } from "@/src/configs/constants";
