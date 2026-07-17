@@ -80,10 +80,10 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
                 });
                 router.push("/articles")
             },
-            onError: () => {
+            onError: (error) => {
                 showFailureToast({
                     title: ARTICLE_MESSAGES.error.create,
-                    description: "Please try again",
+                    description: error?.message ?? ""
                 });
             },
         })
@@ -103,10 +103,10 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
                 });
                 router.push("/articles")
             },
-            onError: () => {
+            onError: (error) => {
                 showFailureToast({
                     title: ARTICLE_MESSAGES.error.update,
-                    description: "Please try again",
+                    description: error.message ?? ""
                 });
             },
         })

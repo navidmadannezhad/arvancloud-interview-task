@@ -17,7 +17,7 @@ export const AUTH_MESSAGES = {
         register: "Register Successful, You may login now...",
     },
     error: {
-        invalidCredentials: "Invalid Credentials",
+        login: "Login Failed",
         register: "Register Failed",
     }
 }

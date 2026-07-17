@@ -7,6 +7,7 @@ import { useAuthenticatedUser, useToaster } from "@/src/hooks";
 import { getQueryClient } from "@/src/configs/queryClient";
 import { useParams } from "next/navigation";
 import { DEFAULT_PAGINATION } from "@/src/configs/constants";
+import { ARTICLE_MESSAGES } from "@/src/configs/messages";
 
 interface DeleteArticleModalProps {
   open: boolean;
@@ -31,17 +32,17 @@ const DeleteArticleModal: FC<DeleteArticleModalProps> = ({ open, onClose, articl
       {
         onSuccess: () => {
           showSuccessToast({
-            title: "Article deleted successfully",
+            title: ARTICLE_MESSAGES.success.delete,
           });
           queryClient.invalidateQueries({ 
             queryKey: [`getArticlesByUserID-${authUserData?.id}`, { page: params.id ?? 1, pageSize: DEFAULT_PAGINATION.pageSize }] 
           });
           onClose();
         },
-        onError: () => {
+        onError: (error) => {
           showFailureToast({
-            title: "Failed to delete article",
-            description: "Please try again",
+            title: ARTICLE_MESSAGES.error.delete,
+            description: error?.message ?? ""
           });
         },
       },

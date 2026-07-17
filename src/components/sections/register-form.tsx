@@ -7,11 +7,11 @@ import { FormProvider, useForm } from "react-hook-form";
 import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "@/src/configs/validators";
-import { InferType } from "yup";
 import { useAuth, useToaster } from "@/src/hooks";
 import { useRouter } from "next/navigation";
 import usePermenantStore from "@/src/services/store/permenant-store";
 import { CreateUserRequestBody } from "@/src/types";
+import { AUTH_MESSAGES } from "@/src/configs/messages";
 
 interface RegisterFormProps{}
 
@@ -47,9 +47,10 @@ const RegisterForm: FC<RegisterFormProps> = () => {
 
                 router.push("/login")
             }, 
-            onError: () => {
+            onError: (error) => {
                 showFailureToast({
-                    title: "Register failed",
+                    title: AUTH_MESSAGES.error.register,
+                    description: error?.message
                 });
             },
         })
