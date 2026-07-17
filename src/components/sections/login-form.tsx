@@ -11,6 +11,7 @@ import { useAuth, useToaster } from "@/src/hooks";
 import { useRouter } from "next/navigation";
 import usePermenantStore from "@/src/services/store/permenant-store";
 import { LoginUserRequestBody } from "@/src/types";
+import { AUTH_MESSAGES } from "@/src/configs/messages";
 
 interface LoginFormProps{}
 
@@ -30,7 +31,6 @@ const LoginForm: FC<LoginFormProps> = () => {
     } = useAuth()
     
     const handleSubmit = (data: Partial<LoginUserRequestBody>) => {
-        // WIP -- we got type problem here
         loginTrigger.mutate(data as LoginUserRequestBody, {
             onSuccess: () => {
                 showSuccessToast({
@@ -39,10 +39,10 @@ const LoginForm: FC<LoginFormProps> = () => {
                 });
                 router.push("/articles")
             }, 
-            onError: () => {
+            onError: (error) => {
                 showFailureToast({
-                    title: "Login failed",
-                    description: "Invalid username or password",
+                    title: AUTH_MESSAGES.error.login,
+                    description: error?.message,
                 });
             },
         })

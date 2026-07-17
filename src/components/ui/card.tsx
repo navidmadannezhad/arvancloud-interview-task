@@ -6,12 +6,14 @@ import clsx from "clsx";
 interface CardProps extends ComponentProps<"div"> {
   title?: string;
   children: ReactNode;
+  contentClassName?: string;
 }
 
 const Card: FC<CardProps> = ({ 
   title,
   children,
-    ...rest 
+  contentClassName,
+  ...rest 
 }) => {
   return (
     <div
@@ -23,7 +25,9 @@ const Card: FC<CardProps> = ({
           {title}
         </div>
       )}
-      <div className="p-6">
+      <div 
+        className={clsx("p-6", contentClassName ?? "")}
+      >
         {children}
       </div>
     </div>

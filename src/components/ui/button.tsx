@@ -21,6 +21,7 @@ const Button: FC<ButtonProps> = ({
 }) => {
   return (
     <RawButton 
+        { ...rest }
         className={
             clsx(
                 // Base styles
@@ -70,7 +71,6 @@ const Button: FC<ButtonProps> = ({
                 rest?.className ?? ""
             )
         }
-        {...rest}
     >
         <>
             {loading ? (

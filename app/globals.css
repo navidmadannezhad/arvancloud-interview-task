@@ -17,7 +17,7 @@
   --secondary-dark: #EBEBEB;
   --secondary-foreground: #000000;
 
-  --danger-light: #EFA5A6;
+  --danger-light: #FAE4E4;
   --danger-main: #D61E20;
   --danger-dense: #AB181A;
   --danger-dark: #801213;
@@ -72,15 +72,6 @@
   --color-muted-foreground: var(--muted-foreground);
   --font-main: var(--system-font);
 }
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
-/* WIP -- check if font is properly given to the variable */
 
 * {
   font-family: var(--font-main), sans-serif;

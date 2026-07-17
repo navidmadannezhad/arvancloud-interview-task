@@ -20,8 +20,10 @@ const interceptRequest = (args: HttpClientArgs) => {
 }
 
 const interceptResponse = async <T>(response: Response): Promise<T> => {
-    if(!response.ok)
-        throw new Error(response.statusText);   
+    if(!response.ok){
+        const error = await response.json();
+        throw new Error(error?.message ?? "");
+    }  
     const data = await response.json();
     return data;
 }

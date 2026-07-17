@@ -4,9 +4,9 @@ import { FC } from "react";
 import { useRouter } from "next/navigation";
 import TableList from "@/src/components/major/table-list";
 import { articleColumns } from "@/src/configs/table-columns/article-columns";
-import { Post } from "@/src/types";
+import { Article } from "@/src/types";
 import { Card, Checkbox } from "@/src/components/ui";
-import { useBlogPostsList } from "@/src/hooks/blogpost/useBlogPostsList";
+import { useArticlesList } from "@/src/hooks/article/useArticlesList";
 import { useAuthenticatedUser } from "@/src/hooks";
 import { DEFAULT_PAGINATION } from "@/src/configs/constants";
 
@@ -17,7 +17,7 @@ interface ArticlesSectionProps {
 const ArticlesSection: FC<ArticlesSectionProps> = ({ page }) => {
   const router = useRouter();
   const { authUserData, authUserDataIsPending } = useAuthenticatedUser();
-  const { blogPosts, blogPostsLoading, blogPostsError } = useBlogPostsList(
+  const { articles, articlesLoading, articlesError } = useArticlesList(
     authUserData?.id ?? 0,
     { page, pageSize: DEFAULT_PAGINATION.pageSize },
   );
@@ -26,21 +26,20 @@ const ArticlesSection: FC<ArticlesSectionProps> = ({ page }) => {
     router.push(nextPage === 1 ? "/articles" : `/articles/page/${nextPage}`);
   };
 
-  const isLoading = authUserDataIsPending || blogPostsLoading;
-  const posts = blogPosts?.posts ?? [];
+  const isLoading = authUserDataIsPending || articlesLoading;
+  const posts = articles?.posts ?? [];
 
   return (
     <Card title="All Posts">
-      <Checkbox checked={true} onCheckedChange={() => {}} />
-      {blogPostsError ? (
+      {articlesError ? (
         <p>Failed to load posts.</p>
       ) : (
-        <TableList<Post>
+        <TableList<Article>
           columns={articleColumns}
           data={posts}
           loading={isLoading}
           pagination={{
-            rowCount: blogPosts?.total ?? 0,
+            rowCount: articles?.total ?? 0,
             pageSize: DEFAULT_PAGINATION.pageSize,
             activePage: page,
             onPageChange: handlePageChange,
