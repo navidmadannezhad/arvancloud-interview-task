@@ -1,6 +1,6 @@
 # Arvan Blog
 
-This readMe is written by AI, but the code itself is maintanable, safe and nice!
+This readMe is written by the help of AI, but the code itself is maintanable, safe and nice!
 Code is written by the creativity and engineering of a human mind, and the speed of an AI mind.
 
 For live preview of the system, visit [arvancloud-interview-task.vercel.app](https://arvancloud-interview-task.vercel.app).
