@@ -1,9 +1,17 @@
 import { useRouter } from "next/navigation";
-import { useLoginMutation } from "@/src/services/api/auth-services";
+import {
+  getUserDataQueryOptions,
+  useLoginMutation,
+} from "@/src/services/api/auth-services";
 import { useCreateUserMutation } from "@/src/services/api/user-services";
 import { AUTH_MESSAGES } from "@/src/configs/messages";
+import { getQueryClient } from "@/src/configs/queryClient";
 import { useToaster } from "../ui/use-toaster";
-import { LoginResponse, RegisterUserResponse } from "@/src/types";
+import {
+  GetAuthUserResponse,
+  LoginResponse,
+  RegisterUserResponse,
+} from "@/src/types";
 
 interface UseAuthActionsProps {
   onLoginSuccess?: (loginResponse: LoginResponse) => void;
@@ -19,6 +27,7 @@ const useAuthActions = ({
   onRegisterError,
 }: UseAuthActionsProps = {}) => {
   const router = useRouter();
+  const queryClient = getQueryClient();
   const { showSuccessToast, showFailureToast } = useToaster();
   const loginMutation = useLoginMutation();
   const registerMutation = useCreateUserMutation();
@@ -28,6 +37,10 @@ const useAuthActions = ({
 
     try {
       response = await loginMutation.mutateAsync(...args);
+      queryClient.setQueryData<GetAuthUserResponse>(
+        getUserDataQueryOptions.queryKey,
+        response as unknown as GetAuthUserResponse,
+      );
       showSuccessToast({
         title: AUTH_MESSAGES.success.login,
         description: "You are now logged in",
@@ -67,6 +80,7 @@ const useAuthActions = ({
   };
 
   const logoutTrigger = () => {
+    queryClient.removeQueries({ queryKey: getUserDataQueryOptions.queryKey });
     router.push("/login");
   };
 

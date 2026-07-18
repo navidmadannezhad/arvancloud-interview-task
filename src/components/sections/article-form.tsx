@@ -1,7 +1,7 @@
 "use client"
 
 import { FC, useEffect } from "react";
-import { Button, Card } from "@/src/components/ui";
+import { Button, Card, Spinner } from "@/src/components/ui";
 import { FormRawInput, FormTagsList, FormTextarea } from "@/src/components/major/form";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -53,15 +53,33 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
         tags: articleDetailResponse.tags ?? [],
         userId: articleDetailResponse.userId,
       });
+      return;
     }
-  }, [editMode, articleDetailResponse]);
+
+    if (!editMode && authUserData?.id) {
+      formContext.reset({
+        title: "",
+        body: "",
+        tags: [],
+        userId: authUserData.id,
+      });
+    }
+  }, [editMode, articleDetailResponse, authUserData?.id, formContext]);
+
+  if (!editMode && !authUserData?.id) {
+    return (
+      <div className="flex min-h-48 items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   const handleSubmit = async (
     data: CreateArticleRequestBody | UpdateArticleByIDRequestBody,
   ) => {
-    if (editMode) {
+    if (editMode && articleID) {
         await updateArticleByIDTrigger({
-            articleID: articleID ?? 0,
+            articleID,
             data: data as UpdateArticleByIDRequestBody,
         });
     } else {

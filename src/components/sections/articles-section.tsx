@@ -18,7 +18,7 @@ const ArticlesSection: FC<ArticlesSectionProps> = ({ page }) => {
   const router = useRouter();
   const { authUserData, authUserDataIsPending } = useAuthenticatedUser();
   const { articles, articlesLoading, articlesError } = useArticlesList(
-    authUserData?.id ?? 0,
+    authUserData?.id,
     { page, pageSize: DEFAULT_PAGINATION.pageSize },
   );
 

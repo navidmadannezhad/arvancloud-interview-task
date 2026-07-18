@@ -27,8 +27,8 @@ const getUserData = async () => {
     });
     return response;
 }
-const getUserDataQueryOptions = {
+export const getUserDataQueryOptions = {
     queryFn: getUserData,
-    queryKey: ['getUserData'],
+    queryKey: ['getUserData'] as const,
 }
 export const useGetUserDataQuery = () => useQuery<GetAuthUserResponse, ApiError>(getUserDataQueryOptions);

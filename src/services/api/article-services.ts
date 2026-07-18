@@ -4,7 +4,7 @@ import { CreateArticleRequestBody, GetArticlesByUserIDResponse, GetArticleTagsRe
 import { getParametrizedUrl } from "@/src/utils/api-utils";
 
 interface GetArticlesByUserIDPayload {
-    userID: number;
+    userID?: number;
     queryParams: QueryParams;
 }
 const getArticlesByUserID = async (payload: GetArticlesByUserIDPayload) => {

@@ -2,7 +2,7 @@
 
 import { FC, ReactNode, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Header, Sidebar } from "@/src/components/ui";
+import { Header, Sidebar, Spinner } from "@/src/components/ui";
 import type { SidebarOption } from "@/src/components/ui";
 import DrawerWrapper from "@/src/components/major/drawer-wrapper";
 import { useAuthActions, useAuthenticatedUser } from "@/src/hooks";
@@ -14,7 +14,7 @@ interface PanelWrapperProps {
 
 const PanelWrapper: FC<PanelWrapperProps> = ({ children, sidebarOptions }) => {
   const pathname = usePathname();
-  const { authUserData } = useAuthenticatedUser();
+  const { authUserData, authUserDataIsPending } = useAuthenticatedUser();
   const { logoutTrigger } = useAuthActions();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -29,6 +29,14 @@ const PanelWrapper: FC<PanelWrapperProps> = ({ children, sidebarOptions }) => {
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
+
+  if (authUserDataIsPending) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
