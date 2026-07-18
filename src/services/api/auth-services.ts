@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import httpClient from "./http-client";
+import httpClient, { ApiError } from "./http-client";
 import { GetAuthUserResponse, LoginResponse, LoginUserRequestBody } from "@/src/types";
 
 const login = async (data: LoginUserRequestBody) => {
@@ -16,7 +16,7 @@ const loginMutationOptions = {
     mutationFn: login,
     mutationKey: ["login"],
 }
-export const useLoginMutation = () => useMutation(loginMutationOptions);
+export const useLoginMutation = () => useMutation<LoginResponse, ApiError, LoginUserRequestBody>(loginMutationOptions);
 
 const getUserData = async () => {
     const response = await httpClient<GetAuthUserResponse>({
@@ -31,4 +31,4 @@ const getUserDataQueryOptions = {
     queryFn: getUserData,
     queryKey: ['getUserData'],
 }
-export const useGetUserDataQuery = () => useQuery(getUserDataQueryOptions);
+export const useGetUserDataQuery = () => useQuery<GetAuthUserResponse, ApiError>(getUserDataQueryOptions);

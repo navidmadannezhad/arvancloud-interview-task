@@ -59,6 +59,7 @@ const RegisterForm: FC<RegisterFormProps> = () => {
             name="password"
             label="Password"
             placeholder="Enter your password"
+            type="password"
           />
           <FormRawInput
             name="email"

@@ -6,6 +6,7 @@ interface StoreType {
         loginPassword: string;
     };
     setPermenantAuth: (auth: StoreType['auth']) => void;
+    resetPermenantAuth: () => void;
 }
 
 const usePermenantStore = create<StoreType>((set) => ({
@@ -14,6 +15,7 @@ const usePermenantStore = create<StoreType>((set) => ({
         loginPassword: '',
     },
     setPermenantAuth: (auth) => set({ auth }),
+    resetPermenantAuth: () => set({ auth: { loginUsername: '', loginPassword: '' } }),
 }))
 
 export default usePermenantStore;

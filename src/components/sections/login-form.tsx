@@ -16,9 +16,15 @@ interface LoginFormProps {}
 
 const LoginForm: FC<LoginFormProps> = () => {
   const router = useRouter();
-  const { auth } = usePermenantStore();
+  const { auth, resetPermenantAuth } = usePermenantStore();
+
+  const handleLoginSuccess = () => {
+    router.push("/articles")
+    resetPermenantAuth()
+  }
+
   const { loginTrigger, loginLoading } = useAuthActions({
-    onLoginSuccess: () => router.push("/articles"),
+    onLoginSuccess: handleLoginSuccess,
   });
 
   const formContext = useForm({

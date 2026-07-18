@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import httpClient, { QueryParams } from "./http-client";
-import { CreateArticleRequestBody, GetArticlesByUserIDResponse, GetArticleTagsResponse, CreateArticleResponse, UpdateArticleByIDRequestBody, UpdateArticleByIDResponse, Article } from "@/src/types";
+import httpClient, { ApiError, QueryParams } from "./http-client";
+import { CreateArticleRequestBody, GetArticlesByUserIDResponse, GetArticleTagsResponse, CreateArticleResponse, UpdateArticleByIDRequestBody, UpdateArticleByIDResponse, DeleteArticleByIDResponse, Article } from "@/src/types";
 import { getParametrizedUrl } from "@/src/utils/api-utils";
 
 interface GetArticlesByUserIDPayload {
@@ -45,8 +45,12 @@ const getArticleByID = async (payload: GetArticleByIDPayload) => {
 const getArticleByIDQueryOptions = (payload: GetArticleByIDPayload) => ({
     queryFn: () => getArticleByID(payload), 
     queryKey: [`getArticleByID-${payload?.articleID}`],
+    retry: (_: any, error: ApiError) => {
+        if(error?.status === 404) return false;
+        return true;
+    }
 })
-export const useGetArticleByIDQuery = (payload: GetArticleByIDPayload) => useQuery({
+export const useGetArticleByIDQuery = (payload: GetArticleByIDPayload) => useQuery<Article, ApiError>({
     ...getArticleByIDQueryOptions(payload),
     enabled: !!payload?.articleID,
 });
@@ -69,7 +73,7 @@ const getArticleTagsQueryOptions = (payload: GetArticleTagsPayload) => ({
     queryFn: () => getArticleTags(payload), 
     queryKey: [`getArticleTags`, payload?.queryParams],
 })
-export const useGetArticleTagsQuery = (payload: GetArticleTagsPayload) => useQuery({
+export const useGetArticleTagsQuery = (payload: GetArticleTagsPayload) => useQuery<GetArticleTagsResponse, ApiError>({
     ...getArticleTagsQueryOptions(payload),
     enabled: !!payload?.queryParams,
 });
@@ -92,7 +96,7 @@ const createArticleMutationOptions = {
     mutationFn: createArticle,
     mutationKey: ["createArticle"],
 }
-export const useCreateArticleMutation = () => useMutation(createArticleMutationOptions);
+export const useCreateArticleMutation = () => useMutation<CreateArticleResponse, ApiError, CreateArticlePayload>(createArticleMutationOptions);
 
 
 interface updateArticleByIDPayload {
@@ -113,13 +117,13 @@ const updateArticleByIDMutationOptions = {
     mutationFn: updateArticleByID,
     mutationKey: [`updateArticleByID`],
 }
-export const useUpdateArticleByIDMutation = () => useMutation(updateArticleByIDMutationOptions);
+export const useUpdateArticleByIDMutation = () => useMutation<UpdateArticleByIDResponse, ApiError, updateArticleByIDPayload>(updateArticleByIDMutationOptions);
 
-interface deleteArticleByIDPayload   {
+interface DeleteArticleByIDPayload   {
     articleID: number;
 }
-const deleteArticleByID = async (payload: deleteArticleByIDPayload) => {
-    const response = await httpClient<UpdateArticleByIDResponse>({
+const deleteArticleByID = async (payload: DeleteArticleByIDPayload) => {
+    const response = await httpClient<DeleteArticleByIDResponse>({
         url: `/api/posts/${payload.articleID}`,
         options:{
             method: "DELETE",
@@ -131,4 +135,4 @@ const deleteArticleByIDMutationOptions = {
     mutationFn: deleteArticleByID,
     mutationKey: [`deleteArticleByID`],
 }
-export const useDeleteArticleByIDMutation = () => useMutation(deleteArticleByIDMutationOptions);
+export const useDeleteArticleByIDMutation = () => useMutation<DeleteArticleByIDResponse, ApiError, DeleteArticleByIDPayload>(deleteArticleByIDMutationOptions);

@@ -5,14 +5,20 @@ import { DEFAULT_PAGINATION } from "@/src/configs/constants";
 import { useToaster } from "../ui/use-toaster";
 import { ARTICLE_MESSAGES } from "@/src/configs/messages";
 import { useAuthenticatedUser } from "../auth/useAuthenticatedUser";
+import {
+    CreateArticleResponse,
+    DeleteArticleByIDResponse,
+    UpdateArticleByIDResponse,
+} from "@/src/types";
+import { ApiError } from "@/src/services/api/http-client";
 
 interface UseArticleActionsProps {
-    onCreateSuccess?: () => void;
-    onCreateError?: (error: any) => void;
-    onUpdateSuccess?: () => void;
-    onUpdateError?: (error: any) => void;
-    onDeleteSuccess?: () => void;
-    onDeleteError?: (error: any) => void;
+    onCreateSuccess?: (createResponse: CreateArticleResponse) => void;
+    onCreateError?: (error: ApiError) => void;
+    onUpdateSuccess?: (updateResponse: UpdateArticleByIDResponse) => void;
+    onUpdateError?: (error: ApiError) => void;
+    onDeleteSuccess?: (deleteResponse: DeleteArticleByIDResponse) => void;
+    onDeleteError?: (error: ApiError) => void;
 }
 
 const useArticleActions = ({
@@ -54,13 +60,13 @@ const useArticleActions = ({
                 title: ARTICLE_MESSAGES.success.create,
             });
             refetchArticleList({ mode: "create" })
-            onCreateSuccess?.();
+            onCreateSuccess?.(response);
         } catch (error: any) {
             showFailureToast({
                 title: ARTICLE_MESSAGES.error.create,
                 description: error?.message ?? ""
             });
-            onCreateError?.(error as Error);
+            onCreateError?.(error);
         }
         return response;
     }
@@ -73,13 +79,13 @@ const useArticleActions = ({
                 title: ARTICLE_MESSAGES.success.update,
             });
             refetchArticleList({ mode: "update" })
-            onUpdateSuccess?.();
+            onUpdateSuccess?.(response);
         } catch (error: any) {
             showFailureToast({
                 title: ARTICLE_MESSAGES.error.update,
                 description: error?.message ?? ""
             });
-            onUpdateError?.(error as Error);
+            onUpdateError?.(error);
         }
         return response;
     }
@@ -92,13 +98,13 @@ const useArticleActions = ({
                 title: ARTICLE_MESSAGES.success.delete,
             });
             refetchArticleList({ mode: "delete" })
-            onDeleteSuccess?.();
+            onDeleteSuccess?.(response);
         } catch (error: any) {
             showFailureToast({
                 title: ARTICLE_MESSAGES.error.delete,
                 description: error?.message ?? ""
             });
-            onDeleteError?.(error as Error);
+            onDeleteError?.(error);
         }
         return response;
     }
