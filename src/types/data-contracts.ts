@@ -124,6 +124,10 @@ export interface LoginUserRequestBody{
     expiresInMins?: number;
 }
 export interface CreateUserRequestBody extends Partial<User>{};
+export interface RefreshAuthRequestBody {
+    refreshToken?: string;
+    expiresInMins?: number;
+}
 export interface RefreshAuthResponse {
     accessToken: string;
     refreshToken: string;

@@ -61,12 +61,12 @@ const useArticleActions = ({
             });
             refetchArticleList({ mode: "create" })
             onCreateSuccess?.(response);
-        } catch (error: any) {
+        } catch (error: unknown) {
             showFailureToast({
                 title: ARTICLE_MESSAGES.error.create,
-                description: error?.message ?? ""
+                description: (error as ApiError)?.message ?? ""
             });
-            onCreateError?.(error);
+            onCreateError?.(error as ApiError);
         }
         return response;
     }
@@ -80,12 +80,12 @@ const useArticleActions = ({
             });
             refetchArticleList({ mode: "update" })
             onUpdateSuccess?.(response);
-        } catch (error: any) {
+        } catch (error: unknown) {
             showFailureToast({
                 title: ARTICLE_MESSAGES.error.update,
-                description: error?.message ?? ""
+                description: (error as ApiError)?.message ?? ""
             });
-            onUpdateError?.(error);
+            onUpdateError?.(error as ApiError);
         }
         return response;
     }
@@ -99,12 +99,12 @@ const useArticleActions = ({
             });
             refetchArticleList({ mode: "delete" })
             onDeleteSuccess?.(response);
-        } catch (error: any) {
+        } catch (error: unknown) {
             showFailureToast({
                 title: ARTICLE_MESSAGES.error.delete,
-                description: error?.message ?? ""
+                description: (error as ApiError)?.message ?? ""
             });
-            onDeleteError?.(error);
+            onDeleteError?.(error as ApiError);
         }
         return response;
     }

@@ -1,6 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import httpClient, { ApiError } from "./http-client";
-import { GetAuthUserResponse, LoginResponse, LoginUserRequestBody } from "@/src/types";
+import {
+    GetAuthUserResponse,
+    LoginResponse,
+    LoginUserRequestBody,
+} from "@/src/types";
 
 const login = async (data: LoginUserRequestBody) => {
     const response = await httpClient<LoginResponse>({
@@ -31,4 +35,8 @@ export const getUserDataQueryOptions = {
     queryFn: getUserData,
     queryKey: ['getUserData'] as const,
 }
-export const useGetUserDataQuery = () => useQuery<GetAuthUserResponse, ApiError>(getUserDataQueryOptions);
+export const useGetUserDataQuery = () => useQuery<GetAuthUserResponse, ApiError>({
+    ...getUserDataQueryOptions,
+    retry: false,
+    refetchOnWindowFocus: false,
+});

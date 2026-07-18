@@ -94,7 +94,7 @@ const ArticleForm: FC<ArticleFormProps> = ({ articleID }) => {
         onSubmit={formContext.handleSubmit(handleSubmit)}
       >
         <div className="md:flex-[0.7] flex-1">
-          <Card contentClassName="flex flex-col gap-2" title="New Article">
+          <Card contentClassName="flex flex-col gap-2" title={editMode ? `Now Editting: ${articleDetailResponse?.title ?? ""}` : "New Article"}>
             <FormRawInput
               name="title"
               label="Title"

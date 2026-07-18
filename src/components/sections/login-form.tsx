@@ -8,20 +8,23 @@ import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/src/configs/validators";
 import { useAuthActions } from "@/src/hooks";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import usePermenantStore from "@/src/services/store/permenant-store";
 import { LoginUserRequestBody } from "@/src/types";
+import { getLoginRedirectPath } from "@/src/utils/auth-utils";
 
 interface LoginFormProps {}
 
 const LoginForm: FC<LoginFormProps> = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { auth, resetPermenantAuth } = usePermenantStore();
 
   const handleLoginSuccess = () => {
-    router.push("/articles")
-    resetPermenantAuth()
-  }
+    const redirectTo = getLoginRedirectPath(searchParams.get("from"));
+    router.push(redirectTo);
+    resetPermenantAuth();
+  };
 
   const { loginTrigger, loginLoading } = useAuthActions({
     onLoginSuccess: handleLoginSuccess,
@@ -32,6 +35,7 @@ const LoginForm: FC<LoginFormProps> = () => {
     defaultValues: {
       username: auth.loginUsername ?? "",
       password: auth.loginPassword ?? "",
+      expiresInMins: 1,
     },
   });
 

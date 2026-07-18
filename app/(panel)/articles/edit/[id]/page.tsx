@@ -17,4 +17,3 @@ export default async function ArticleEdit({ params }: ArticleEditPageProps) {
 // TODO - check memory usage
 // TODO - set build strategy (standalone and etc)
 // TODO - dockerize
-// TODO - develop log out with little expiry time

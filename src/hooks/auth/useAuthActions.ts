@@ -6,18 +6,20 @@ import {
 import { useCreateUserMutation } from "@/src/services/api/user-services";
 import { AUTH_MESSAGES } from "@/src/configs/messages";
 import { getQueryClient } from "@/src/configs/queryClient";
+import { clearAuthSession } from "@/src/utils/auth-utils";
 import { useToaster } from "../ui/use-toaster";
 import {
   GetAuthUserResponse,
   LoginResponse,
   RegisterUserResponse,
 } from "@/src/types";
+import { ApiError } from "@/src/services/api/http-client";
 
 interface UseAuthActionsProps {
   onLoginSuccess?: (loginResponse: LoginResponse) => void;
-  onLoginError?: (error: any) => void;
+  onLoginError?: (error: ApiError) => void;
   onRegisterSuccess?: (registerResponse: RegisterUserResponse) => void;
-  onRegisterError?: (error: any) => void;
+  onRegisterError?: (error: ApiError) => void;
 }
 
 const useAuthActions = ({
@@ -46,12 +48,12 @@ const useAuthActions = ({
         description: "You are now logged in",
       });
       onLoginSuccess?.(response);
-    } catch (error: any) {
+    } catch (error: unknown) {
       showFailureToast({
         title: AUTH_MESSAGES.error.login,
-        description: error?.message ?? "",
+        description: (error as ApiError)?.message ?? "",
       });
-      onLoginError?.(error as Error);
+      onLoginError?.(error as ApiError);
     }
 
     return response;
@@ -68,19 +70,19 @@ const useAuthActions = ({
         title: AUTH_MESSAGES.success.register,
       });
       onRegisterSuccess?.(response);
-    } catch (error: any) {
+    } catch (error: unknown) {
       showFailureToast({
         title: AUTH_MESSAGES.error.register,
-        description: error?.message ?? "",
+        description: (error as ApiError)?.message ?? "",
       });
-      onRegisterError?.(error as Error);
+      onRegisterError?.(error as ApiError);
     }
 
     return response;
   };
 
-  const logoutTrigger = () => {
-    queryClient.removeQueries({ queryKey: getUserDataQueryOptions.queryKey });
+  const logoutTrigger = async () => {
+    await clearAuthSession();
     router.push("/login");
   };
 

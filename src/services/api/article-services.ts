@@ -8,8 +8,6 @@ interface GetArticlesByUserIDPayload {
     queryParams: QueryParams;
 }
 const getArticlesByUserID = async (payload: GetArticlesByUserIDPayload) => {
-    console.log("here")
-    console.log([`getArticlesByUserID-${payload?.userID}`, payload?.queryParams])
     const url = getParametrizedUrl(`/api/posts/user/${payload?.userID}`, payload?.queryParams);
     const response = await httpClient<GetArticlesByUserIDResponse>({
         url: url,
@@ -45,7 +43,7 @@ const getArticleByID = async (payload: GetArticleByIDPayload) => {
 const getArticleByIDQueryOptions = (payload: GetArticleByIDPayload) => ({
     queryFn: () => getArticleByID(payload), 
     queryKey: [`getArticleByID-${payload?.articleID}`],
-    retry: (_: any, error: ApiError) => {
+    retry: (_: unknown, error: ApiError) => {
         if(error?.status === 404) return false;
         return true;
     }
