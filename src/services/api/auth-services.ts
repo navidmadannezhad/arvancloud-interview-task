@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import httpClient from "./http-client";
-import { GetAuthUserResponse, LoginUserRequestBody } from "@/src/types";
+import { GetAuthUserResponse, LoginResponse, LoginUserRequestBody } from "@/src/types";
 
 const login = async (data: LoginUserRequestBody) => {
-    const response = await httpClient({
+    const response = await httpClient<LoginResponse>({
         url: "/api/auth/login",
         options:{
             method: "POST",

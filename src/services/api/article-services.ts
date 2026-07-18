@@ -8,6 +8,8 @@ interface GetArticlesByUserIDPayload {
     queryParams: QueryParams;
 }
 const getArticlesByUserID = async (payload: GetArticlesByUserIDPayload) => {
+    console.log("here")
+    console.log([`getArticlesByUserID-${payload?.userID}`, payload?.queryParams])
     const url = getParametrizedUrl(`/api/posts/user/${payload?.userID}`, payload?.queryParams);
     const response = await httpClient<GetArticlesByUserIDResponse>({
         url: url,

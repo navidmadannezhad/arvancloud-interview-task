@@ -2,7 +2,7 @@
 
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Article } from "@/src/types";
 import OperationButtons from "@/src/components/major/operation-buttons";
 import DeleteArticleModal from "@/src/components/major/delete-article-modal";
@@ -12,10 +12,11 @@ const truncate = (value: string, maxLength = 60) =>
 
 const ArticleOperationButtons = ({ row }: { row: Row<Article> }) => {
   const router = useRouter();
+  const params = useParams();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleNavigateToEdit = () => {
-    router.push(`/articles/edit/${row.original.id}/`);
+    router.push(`/articles/edit/${row.original.id}?fromPage=${params?.id ?? 1}`);
   };
 
   const handleOpenDeleteModal = () => {
