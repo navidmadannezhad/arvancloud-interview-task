@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test:unit": "playwright test --config playwright.unit.config.ts",
     "test:e2e": "playwright test --config playwright.config.ts",
-    "prebuild": "pnpm run lint && pnpm run test:unit"
+    "prebuild": "pnpm run lint && pnpm run test:unit",
+    "analyze-bundle": "next experimental-analyze"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

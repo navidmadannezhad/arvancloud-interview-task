@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import Table from "@/src/components/ui/table";
+import { Table } from "@/src/components/ui";
 import { Pagination, Spinner } from "@/src/components/ui";
 
 interface TableListPaginationProps {
