@@ -67,7 +67,7 @@ const RegisterForm: FC<RegisterFormProps> = () => {
             placeholder="Enter your email"
           />
           <div className="flex flex-col gap-2">
-            <Button loading={registerLoading} variant="primary" type="submit">
+            <Button disabled={registerLoading} loading={registerLoading} variant="primary" type="submit">
               Sign up
             </Button>
             <p className="text-center text-sm">

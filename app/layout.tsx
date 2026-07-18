@@ -23,13 +23,13 @@ export default function RootLayout({
       lang="en"
       className={`${systemFont.variable} h-full antialiased`}
     >
-      <Providers>
         <body>
-          <main>
-            {children}
-          </main>
+          <Providers>
+            <main>
+                {children}
+            </main>
+          </Providers>
         </body>
-      </Providers>
     </html>
   );
 } 

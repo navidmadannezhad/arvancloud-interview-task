@@ -62,7 +62,7 @@ const LoginForm: FC<LoginFormProps> = () => {
             type="password"
           />
           <div className="flex flex-col gap-2">
-            <Button loading={loginLoading} variant="primary" type="submit">
+            <Button disabled={loginLoading} loading={loginLoading} variant="primary" type="submit">
               Sign in
             </Button>
             <p className="text-center text-sm">

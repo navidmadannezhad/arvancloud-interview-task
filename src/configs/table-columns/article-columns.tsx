@@ -53,11 +53,12 @@ export const articleColumns: ColumnDef<Article>[] = [
   {
     accessorKey: "title",
     header: "Title",
+    cell: ({ row }) => `${row.original?.title ?? ""}`,
   },
   {
     id: "author",
     header: "Author",
-    cell: ({ row }) => `@${row.original.userId}`,
+    cell: ({ row }) => `@${row.original?.userId ?? ""}`,
   },
   {
     accessorKey: "tags",
@@ -67,12 +68,12 @@ export const articleColumns: ColumnDef<Article>[] = [
   {
     id: "excerpt",
     header: "Excerpt",
-    cell: ({ row }) => truncate(row.original.body),
+    cell: ({ row }) => truncate(row.original?.body ?? ""),
   },
   {
     id: "created",
     header: "Created",
-    cell: () => null,
+    cell: () => `-`,
   },
   {
     id: "operations",
