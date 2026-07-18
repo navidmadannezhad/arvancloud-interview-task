@@ -124,15 +124,19 @@ export interface LoginUserRequestBody{
     expiresInMins?: number;
 }
 export interface CreateUserRequestBody extends Partial<User>{};
+export interface RefreshAuthRequestBody {
+    refreshToken?: string;
+    expiresInMins?: number;
+}
 export interface RefreshAuthResponse {
     accessToken: string;
     refreshToken: string;
 }
-export type GetUsersResponse = Response<User, "users">;
-export type RegisterUserResponse = User;
-export type UpdateUserByIDResponse = User;
-export type DeleteUserByIDResponse = User & {
+export interface GetUsersResponse extends Response<User, "users"> {}
+export interface RegisterUserResponse extends User {}
+export interface UpdateUserByIDResponse extends User {}
+export interface DeleteUserByIDResponse extends User {
     isDeleted: boolean;
     deletedOn: string;
-};
-export type GetAuthUserResponse = User;
+}
+export interface GetAuthUserResponse extends User {}

@@ -2,7 +2,7 @@
 
 import { Toast as RawToast } from "@base-ui/react/toast";
 import { ReactNode } from "react";
-import type { ToastVariant } from "@/src/components/ui/toast";
+import type { ToastVariant } from "@/src/components/ui";
 
 interface ToastOptions {
   title?: ReactNode;

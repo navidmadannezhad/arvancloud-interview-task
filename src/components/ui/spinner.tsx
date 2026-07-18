@@ -1,5 +1,5 @@
 import { ComponentProps, FC } from "react";
-import SpinnerIcon from "@/src/components/major/icons/spinner-icon";
+import { SpinnerIcon } from "@/src/components/major/icons";
 import clsx from "clsx";
 
 interface SpinnerProps extends ComponentProps<typeof SpinnerIcon> {}

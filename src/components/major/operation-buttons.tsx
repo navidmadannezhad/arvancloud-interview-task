@@ -3,7 +3,7 @@
 import { FC } from "react";
 import clsx from "clsx";
 import { Menu } from "@/src/components/ui";
-import DotsIcon from "@/src/components/major/icons/dots-icon";
+import { DotsIcon } from "@/src/components/major/icons";
 
 export interface OperationOption {
   title: string;

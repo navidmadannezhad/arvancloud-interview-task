@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { IconProps } from "@/src/types/common";
+import { IconProps } from "@/src/types";
 
 const InfoIcon: FC<IconProps> = ({ 
     size = 24, 

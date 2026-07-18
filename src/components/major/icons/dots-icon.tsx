@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { IconProps } from "@/src/types/common";
+import { IconProps } from "@/src/types";
 
 const DotsIcon: FC<IconProps> = ({ 
     size = 12, 

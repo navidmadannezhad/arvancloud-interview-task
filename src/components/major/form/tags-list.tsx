@@ -10,9 +10,11 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Controller, useFormContext } from "react-hook-form";
 import clsx from "clsx";
-import { Checkbox, Input, Spinner } from "@/src/components/ui";
+import { Spinner } from "@/src/components/ui";
 import InputWrapper from "./input-wrapper";
-import { useArticlesTagsList } from "@/src/hooks/article/useArticlesTagsList";
+import { SimpleRawInput } from "./raw-input";
+import { SimpleRawCheckbox } from "./checkbox";
+import { useArticlesTagsList } from "@/src/hooks/article";
 
 const TAG_ROW_HEIGHT = 36;
 const TAG_LIST_HEIGHT = 240;
@@ -80,6 +82,7 @@ export const SimpleTagsList: FC<SimpleTagsListProps> = ({
     [customTags, apiTagNames, value],
   );
 
+  // eslint-disable-next-line
   const rowVirtualizer = useVirtualizer({
     count: allTagNames.length,
     getScrollElement: () => listRef.current,
@@ -122,7 +125,7 @@ export const SimpleTagsList: FC<SimpleTagsListProps> = ({
   return (
     <InputWrapper label={label}>
       <div className="flex flex-col gap-3">
-        <Input
+        <SimpleRawInput
           placeholder="New tag"
           value={newTagInput}
           onChange={(event) => setNewTagInput(event.target.value)}
@@ -159,13 +162,13 @@ export const SimpleTagsList: FC<SimpleTagsListProps> = ({
                         transform: `translateY(${virtualRow.start}px)`,
                       }}
                     >
-                      <Checkbox
+                      <SimpleRawCheckbox
+                        label={tagName}
                         checked={value.includes(tagName)}
                         onCheckedChange={(checked) =>
                           handleToggleTag(tagName, checked === true)
                         }
                       />
-                      <span className="text-sm text-muted-dark">{tagName}</span>
                     </div>
                   );
                 })}

@@ -11,11 +11,12 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(destinationUrl, 301);
     }
 
-    const accessToken = request.cookies.get('accessToken')?.value;
-    const refreshToken = request.cookies.get('refreshToken')?.value;
-    const isAuthenticated = !!accessToken && !!refreshToken;
+    const accessToken = request.cookies.get("accessToken")?.value;
+    const refreshToken = request.cookies.get("refreshToken")?.value;
+    // Access cookie expires quickly (expiresInMins); refresh cookie is the session anchor.
+    const isAuthenticated = !!refreshToken || !!accessToken;
 
-    if (pathname.startsWith('/articles')) {
+    if (pathname.startsWith("/articles")) {
         if (!isAuthenticated) {
             const loginUrl = new URL('/login', request.url);
             loginUrl.searchParams.set('from', pathname);
@@ -28,6 +29,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/articles/:path*', 
+    '/',
+    '/articles/:path*',
   ],
 };

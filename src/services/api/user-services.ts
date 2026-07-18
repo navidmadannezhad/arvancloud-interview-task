@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import httpClient from "./http-client";
-import { CreateUserRequestBody } from "@/src/types";
+import { CreateUserRequestBody, RegisterUserResponse } from "@/src/types";
 
 const createUser = async (data: CreateUserRequestBody) => {
-    const response = await httpClient({
+    const response = await httpClient<RegisterUserResponse>({
         url: "/api/users/add",
         options:{
             method: "POST",

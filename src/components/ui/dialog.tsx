@@ -32,7 +32,8 @@ const DialogPortal: FC<DialogPortalProps> = (props) => <RawDialog.Portal {...pro
 const DialogBackdrop: FC<DialogBackdropProps> = ({ className, ...rest }) => (
   <RawDialog.Backdrop
     className={clsx(
-      "fixed inset-0 bg-foreground/20 transition-opacity",
+      "fixed inset-0 bg-foreground/20 transition-opacity duration-300 ease-out",
+      "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
       className,
     )}
     {...rest}
@@ -54,6 +55,9 @@ const DialogPopup: FC<DialogPopupProps> = ({ className, ...rest }) => (
     className={clsx(
       "w-full max-w-lg overflow-hidden rounded-xl bg-background outline-none",
       "shadow-[0_3px_6px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.07)]",
+      "transition-[transform,opacity] duration-300 ease-out",
+      "data-[starting-style]:scale-95 data-[starting-style]:opacity-0",
+      "data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
       className,
     )}
     {...rest}
@@ -116,7 +120,7 @@ const Dialog: FC<DialogProps> = ({
 
             <div className="flex justify-end gap-3 p-6">
               <DialogClose
-                nativeButton={false}
+                nativeButton={true}
                 render={
                   <Button variant="muted" onClick={onCancel}>
                     {cancelLabel}
@@ -124,7 +128,7 @@ const Dialog: FC<DialogProps> = ({
                 }
               />
               <DialogClose
-                nativeButton={false}
+                nativeButton={true}
                 render={
                   <Button
                     variant="primary"

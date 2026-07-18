@@ -2,20 +2,21 @@
 
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Article } from "@/src/types";
-import OperationButtons from "@/src/components/major/operation-buttons";
-import DeleteArticleModal from "@/src/components/major/delete-article-modal";
+import { OperationButtons } from "@/src/components/major";
+import { DeleteArticleModal } from "@/src/components/article";
 
 const truncate = (value: string, maxLength = 60) =>
   value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
 
 const ArticleOperationButtons = ({ row }: { row: Row<Article> }) => {
   const router = useRouter();
+  const params = useParams();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleNavigateToEdit = () => {
-    router.push(`/articles/edit/${row.original.id}/`);
+    router.push(`/articles/edit/${row.original.id}?fromPage=${params?.id ?? 1}`);
   };
 
   const handleOpenDeleteModal = () => {
@@ -52,11 +53,12 @@ export const articleColumns: ColumnDef<Article>[] = [
   {
     accessorKey: "title",
     header: "Title",
+    cell: ({ row }) => `${row.original?.title ?? ""}`,
   },
   {
     id: "author",
     header: "Author",
-    cell: ({ row }) => `@${row.original.userId}`,
+    cell: ({ row }) => `@${row.original?.userId ?? ""}`,
   },
   {
     accessorKey: "tags",
@@ -66,12 +68,12 @@ export const articleColumns: ColumnDef<Article>[] = [
   {
     id: "excerpt",
     header: "Excerpt",
-    cell: ({ row }) => truncate(row.original.body),
+    cell: ({ row }) => truncate(row.original?.body ?? ""),
   },
   {
     id: "created",
     header: "Created",
-    cell: () => null,
+    cell: () => `-`,
   },
   {
     id: "operations",

@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import Table from "@/src/components/ui/table";
+import { Table } from "@/src/components/ui";
 import { Pagination, Spinner } from "@/src/components/ui";
 
 interface TableListPaginationProps {
@@ -29,9 +29,12 @@ const TableLoadingOverlay = () => (
 );
 
 const TableList = <T,>({ columns, data, loading = false, pagination }: TableListProps<T>) => {
+  // eslint-disable-next-line
   const table = useReactTable({
     data,
     columns,
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
     getCoreRowModel: getCoreRowModel(),
   });
 

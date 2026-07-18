@@ -1,9 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import httpClient from "./http-client";
-import { GetAuthUserResponse, LoginUserRequestBody } from "@/src/types";
+import httpClient, { ApiError } from "./http-client";
+import {
+    GetAuthUserResponse,
+    LoginResponse,
+    LoginUserRequestBody,
+} from "@/src/types";
 
 const login = async (data: LoginUserRequestBody) => {
-    const response = await httpClient({
+    const response = await httpClient<LoginResponse>({
         url: "/api/auth/login",
         options:{
             method: "POST",
@@ -16,7 +20,7 @@ const loginMutationOptions = {
     mutationFn: login,
     mutationKey: ["login"],
 }
-export const useLoginMutation = () => useMutation(loginMutationOptions);
+export const useLoginMutation = () => useMutation<LoginResponse, ApiError, LoginUserRequestBody>(loginMutationOptions);
 
 const getUserData = async () => {
     const response = await httpClient<GetAuthUserResponse>({
@@ -27,8 +31,12 @@ const getUserData = async () => {
     });
     return response;
 }
-const getUserDataQueryOptions = {
+export const getUserDataQueryOptions = {
     queryFn: getUserData,
-    queryKey: ['getUserData'],
+    queryKey: ['getUserData'] as const,
 }
-export const useGetUserDataQuery = () => useQuery(getUserDataQueryOptions);
+export const useGetUserDataQuery = () => useQuery<GetAuthUserResponse, ApiError>({
+    ...getUserDataQueryOptions,
+    retry: false,
+    refetchOnWindowFocus: false,
+});
