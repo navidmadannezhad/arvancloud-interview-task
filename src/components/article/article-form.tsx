@@ -6,10 +6,11 @@ import { FormRawInput, FormTagsList, FormTextarea } from "@/src/components/major
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { articleSchema } from "@/src/configs/validators";
-import { useArticleDetail, useAuthenticatedUser } from "@/src/hooks";
+import { useArticleDetail } from "@/src/hooks/article";
+import { useAuthenticatedUser } from "@/src/hooks/auth";
 import { useRouter } from "next/navigation";
 import { CreateArticleRequestBody, UpdateArticleByIDRequestBody } from "@/src/types";
-import { useArticleActions } from "@/src/hooks/article/useArticleActions";
+import { useArticleActions } from "@/src/hooks/article";
 
 interface ArticleFormProps {
   articleID?: number;

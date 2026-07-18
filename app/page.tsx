@@ -1,5 +1,4 @@
-import Button from "@/src/components/ui/button";
-import Input from "@/src/components/ui/input";
+import { Button, Input } from "@/src/components/ui";
 
 export default function Home() {
   return (

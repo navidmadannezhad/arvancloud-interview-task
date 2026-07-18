@@ -1,4 +1,4 @@
-import { IconProps } from "@/src/types/common";
+import { IconProps } from "@/src/types";
 import { FC } from "react";
 
 interface SpinnerIconProps extends IconProps{

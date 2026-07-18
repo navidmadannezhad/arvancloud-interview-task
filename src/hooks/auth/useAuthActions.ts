@@ -7,7 +7,7 @@ import { useCreateUserMutation } from "@/src/services/api/user-services";
 import { AUTH_MESSAGES } from "@/src/configs/messages";
 import { getQueryClient } from "@/src/configs/queryClient";
 import { clearAuthSession } from "@/src/utils/auth-utils";
-import { useToaster } from "../ui/use-toaster";
+import { useToaster } from "@/src/hooks/ui";
 import {
   GetAuthUserResponse,
   LoginResponse,

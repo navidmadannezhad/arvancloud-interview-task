@@ -3,8 +3,7 @@
 import { FC, ReactNode } from "react";
 import clsx from "clsx";
 import { Button } from "@/src/components/ui";
-import { DrawerParts } from "@/src/components/ui/drawer";
-import type { DrawerSide } from "@/src/components/ui/drawer";
+import { DrawerParts, DrawerSide } from "@/src/components/ui";
 
 interface DrawerWrapperProps {
   open: boolean;

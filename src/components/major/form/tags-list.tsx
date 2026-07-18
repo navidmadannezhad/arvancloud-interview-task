@@ -14,7 +14,7 @@ import { Spinner } from "@/src/components/ui";
 import InputWrapper from "./input-wrapper";
 import { SimpleRawInput } from "./raw-input";
 import { SimpleRawCheckbox } from "./checkbox";
-import { useArticlesTagsList } from "@/src/hooks/article/useArticlesTagsList";
+import { useArticlesTagsList } from "@/src/hooks/article";
 
 const TAG_ROW_HEIGHT = 36;
 const TAG_LIST_HEIGHT = 240;

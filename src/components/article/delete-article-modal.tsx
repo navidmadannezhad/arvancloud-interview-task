@@ -1,8 +1,8 @@
 "use client";
 
 import { FC } from "react";
-import ModalWrapper from "./modal-wrapper";
-import { useArticleActions } from "@/src/hooks/article/useArticleActions";
+import { ModalWrapper } from "@/src/components/major";
+import { useArticleActions } from "@/src/hooks/article";
 
 interface DeleteArticleModalProps {
   open: boolean;

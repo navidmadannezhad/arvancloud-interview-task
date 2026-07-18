@@ -4,7 +4,7 @@ import { FC, ReactNode, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Header, Sidebar, Spinner } from "@/src/components/ui";
 import type { SidebarOption } from "@/src/components/ui";
-import DrawerWrapper from "@/src/components/major/drawer-wrapper";
+import { DrawerWrapper } from "@/src/components/major";
 import { useAuthActions, useAuthenticatedUser } from "@/src/hooks";
 
 interface PanelWrapperProps {

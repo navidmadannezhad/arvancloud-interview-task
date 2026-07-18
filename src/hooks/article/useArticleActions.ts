@@ -2,7 +2,7 @@ import { getQueryClient } from "@/src/configs/queryClient";
 import { useCreateArticleMutation, useDeleteArticleByIDMutation, useUpdateArticleByIDMutation } from "@/src/services/api/article-services";
 import { useParams, useSearchParams } from "next/navigation";
 import { DEFAULT_PAGINATION } from "@/src/configs/constants";
-import { useToaster } from "../ui/use-toaster";
+import { useToaster } from "@/src/hooks/ui";
 import { ARTICLE_MESSAGES } from "@/src/configs/messages";
 import { useAuthenticatedUser } from "../auth/useAuthenticatedUser";
 import {

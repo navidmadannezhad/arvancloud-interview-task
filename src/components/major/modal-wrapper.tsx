@@ -3,14 +3,13 @@
 import { FC, ReactNode } from "react";
 import clsx from "clsx";
 import { Button } from "@/src/components/ui";
-import { DialogParts } from "@/src/components/ui/dialog";
-import { DrawerParts } from "@/src/components/ui/drawer";
+import { DialogParts, DrawerParts } from "@/src/components/ui";
 import {
   CheckCircleIcon,
   ForbiddenIcon,
   InfoIcon,
 } from "@/src/components/major/icons";
-import { useMediaQuery } from "@/src/hooks/ui/use-media-query";
+import { useMediaQuery } from "@/src/hooks/ui";
 
 type ModalVariant = "success" | "danger" | "info";
 

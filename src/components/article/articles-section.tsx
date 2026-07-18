@@ -2,11 +2,11 @@
 
 import { FC } from "react";
 import { useRouter } from "next/navigation";
-import TableList from "@/src/components/major/table-list";
+import { TableList } from "@/src/components/major";
 import { articleColumns } from "@/src/configs/table-columns/article-columns";
 import { Article } from "@/src/types";
 import { Card } from "@/src/components/ui";
-import { useArticlesList } from "@/src/hooks/article/useArticlesList";
+import { useArticlesList } from "@/src/hooks/article";
 import { useAuthenticatedUser } from "@/src/hooks";
 import { DEFAULT_PAGINATION } from "@/src/configs/constants";
 

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-    DEFAULT_ACCESS_TOKEN_EXPIRES_MINS,
     setAuthCookies,
-} from "@/src/configs/auth-cookies";
+} from "@/src/utils/auth-utils";
+import { DEFAULT_ACCESS_TOKEN_EXPIRES_MINS } from "@/src/configs/constants";
 import { getServerUrl } from "@/src/configs/server-url";
 import { LoginResponse, LoginUserRequestBody } from "@/src/types";
 

@@ -1,4 +1,4 @@
-import PanelWrapper from "@/src/components/sections/panel-wrapper";
+import { PanelWrapper } from "@/src/components/major";
 import type { SidebarOption } from "@/src/components/ui";
 
 const sidebarOptions: Omit<SidebarOption, "active">[] = [

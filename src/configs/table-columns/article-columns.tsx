@@ -4,8 +4,8 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Article } from "@/src/types";
-import OperationButtons from "@/src/components/major/operation-buttons";
-import DeleteArticleModal from "@/src/components/major/delete-article-modal";
+import { OperationButtons } from "@/src/components/major";
+import { DeleteArticleModal } from "@/src/components/article";
 
 const truncate = (value: string, maxLength = 60) =>
   value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import ArticlesSection from "@/src/components/sections/articles-section";
+import { ArticlesSection } from "@/src/components/article";
 
 interface ArticlesPaginatedPageProps {
   params: Promise<{ page: string }>;
